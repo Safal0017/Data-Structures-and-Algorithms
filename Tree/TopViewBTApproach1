@@ -1,0 +1,82 @@
+Top View BT Approach 1
+GFG: https://www.geeksforgeeks.org/problems/top-view-of-binary-tree/1
+
+/*
+class Node {
+  public:
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int val) {
+        data = val;
+        left = nullptr;
+        right = nullptr;
+    }
+};
+*/
+
+class Solution {
+  public:
+  
+  
+        void calculateLAndR(int &l, int &r, Node* root, int pos) {
+            if(!root)
+            return;
+            
+            if(pos<l)
+            l = pos;
+            
+            if(pos>r)
+            r = pos;
+            
+            calculateLAndR(l, r, root->left, pos-1);
+            calculateLAndR(l, r, root->right, pos+1);
+        }
+        
+        void TopView(vector<int> &ans, vector<bool> &visited, Node* root, int l) {
+            if(!root)
+            return;
+            
+            queue<Node*> q;
+            queue<int> index;
+            q.push(root);
+            index.push(0-l);
+            
+            while(!q.empty()) {
+                Node* node = q.front();
+                q.pop();
+                int pos = index.front();
+                index.pop();
+                
+                if(visited[pos]==0){
+                    ans[pos] = node->data;
+                    visited[pos]=1;
+                }
+                
+                if(node->left) {
+                    q.push(node->left);
+                    index.push(pos-1);
+                }
+                if(node->right) {
+                    q.push(node->right);
+                    index.push(pos+1);
+                }
+            }
+        
+        }
+  
+    vector<int> topView(Node *root) {
+        // code here
+        int l=0,r=0;
+    	calculateLAndR(l,r,root, 0);
+    	
+    // 	cout<<l<<" "<<r;
+    	
+    	int size = r-(l)+1;
+    	vector<int> ans(size);
+    	vector<bool> visited(size, 0);
+    	TopView(ans, visited, root, l);
+    	return ans;
+    }
+};
