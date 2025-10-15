@@ -12,6 +12,7 @@ public:
 };
 */
 
+//GFG Platform
 class Solution {
   public:
   
@@ -55,3 +56,98 @@ class Solution {
         return ans;
     }
 };
+
+
+//https://www.onlinegdb.com/online_c++_compiler
+
+#include <iostream>
+// #include<vector>
+// #include <queue>
+// #include <climits>
+// using namespace std;
+
+// struct Node {
+// 	int data;
+// 	Node* left;
+// 	Node* right;
+// 	Node(int x) : data(x), left(nullptr), right(nullptr) {}
+// };
+
+// Node* buildTree(const vector<int>& arr) {
+// 	if (arr.empty() || arr[0] == -1) return nullptr;
+
+// 	Node* root = new Node(arr[0]);
+// 	queue<Node*> q;
+// 	q.push(root);
+
+// 	int i = 1;
+// 	while (!q.empty() && i < arr.size()) {
+// 		Node* current = q.front();
+// 		q.pop();
+
+// 		// Left child
+// 		if (i < arr.size() && arr[i] != -1) {
+// 			current->left = new Node(arr[i]);
+// 			q.push(current->left);
+// 		}
+// 		i++;
+
+// 		// Right child
+// 		if (i < arr.size() && arr[i] != -1) {
+// 			current->right = new Node(arr[i]);
+// 			q.push(current->right);
+// 		}
+// 		i++;
+// 	}
+// 	return root;
+// }
+
+// void FindLeftMostRightMost(int &l, int &r, int pos, Node* root) {
+//         if(!root)
+//         return;
+        
+//         if(pos<l)
+//         l = pos;
+        
+//         if(pos>r)
+//         r = pos;
+        
+//         FindLeftMostRightMost(l, r, pos-1, root->left);
+//         FindLeftMostRightMost(l, r, pos+1, root->right);
+//     }
+    
+//     void FormulateBottomView(vector<int> &ans, vector<int> &levelVector, int currL, int pos, Node* root) {
+//         if(!root)
+//         return;
+        
+//         if(currL>levelVector[pos]){
+//             levelVector[pos] = currL;
+//             ans[pos] = root->data;
+//         }
+        
+//         FormulateBottomView(ans, levelVector, currL+1, pos-1, root->left);
+//         FormulateBottomView(ans, levelVector, currL+1, pos+1, root->right);
+        
+//     }
+  
+//     vector<int> bottomView(Node *root) {
+//         // code here
+//         int l = 0, r = 0;
+//         FindLeftMostRightMost(l, r, 0, root);
+//         cout<<l<<" "<<r;
+//         int size = r-(l)+1;
+//         vector<int> ans(size);
+//         vector<int> levelVector(size, INT_MIN);
+//         FormulateBottomView(ans, levelVector, 0, 0, root);
+//         return ans;
+//     }
+
+// int main()
+// {
+//     vector<int> arr = {1,2,3,4,5,-1,6,7,8,-1,-1,9,10,11,-1,-1,-1,12,13,-1,-1,-1,-1,-1,-1,-1,14,-1,-1};
+//     Node* root = buildTree(arr);
+    
+//     bottomView(root);
+
+//     return 0;
+// }
