@@ -1,0 +1,57 @@
+/*
+class Node {
+public:
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int x) {
+        data = x;
+        left = right = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+  
+    void FindLeftMostRightMost(int &l, int &r, int pos, Node* root) {
+        if(!root)
+        return;
+        
+        if(pos<l)
+        l = pos;
+        
+        if(pos>r)
+        r = pos;
+        
+        FindLeftMostRightMost(l, r, pos-1, root->left);
+        FindLeftMostRightMost(l, r, pos+1, root->right);
+    }
+    
+    void FormulateBottomView(vector<int> &ans, vector<int> &levelVector, int currL, int pos, Node* root) {
+        if(!root)
+        return;
+        
+        if(currL>=levelVector[pos]){
+            levelVector[pos] = currL;
+            ans[pos] = root->data;
+        }
+        
+        FormulateBottomView(ans, levelVector, currL+1, pos-1, root->left);
+        FormulateBottomView(ans, levelVector, currL+1, pos+1, root->right);
+        
+    }
+  
+    vector<int> bottomView(Node *root) {
+        // code here
+        int l = 0, r = 0;
+        FindLeftMostRightMost(l, r, 0, root);
+        // cout<<l<<" "<<r;
+        int size = r-(l)+1;
+        vector<int> ans(size);
+        vector<int> levelVector(size, INT_MIN);
+        FormulateBottomView(ans, levelVector, 0, 0-l, root);
+        return ans;
+    }
+};
