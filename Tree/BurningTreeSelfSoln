@@ -1,0 +1,149 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left),
+ * right(right) {}
+ * };
+ */
+
+Link:: https://leetcode.com/problems/amount-of-time-for-binary-tree-to-be-infected/
+
+class Solution {
+
+    void findTarget(vector<TreeNode*>& directions, int dist, int& height,
+                    bool& flag, TreeNode* root, int start) {
+        if (!root)
+            return;
+
+        if (root->val == start) {
+            directions.push_back(root);
+            height = max(height, dist + 1);
+            flag = true;
+            return;
+        }
+
+        directions.push_back(root);
+        findTarget(directions, dist + 1, height, flag, root->left, start);
+
+        if (flag)
+            return;
+        directions.pop_back();
+
+        directions.push_back(root);
+        findTarget(directions, dist + 1, height, flag, root->right, start);
+
+        if (flag)
+            return;
+        directions.pop_back();
+    }
+
+    int BTHeight(TreeNode* root, int BaseHeight) {
+        if (!root)
+            return BaseHeight - 1;
+
+        return max(BTHeight(root->left, BaseHeight + 1),
+                   BTHeight(root->right, BaseHeight + 1));
+    }
+
+public:
+    int amountOfTime(TreeNode* root, int start) {
+
+        // if (!root || root->val == start)
+        //     return 0;
+
+        if (!root)
+            return 0;
+
+        // If root is the start, burning time is the height of the tree rooted
+        // at root
+        if (root->val == start)
+            return BTHeight(root, 0);
+
+        vector<TreeNode*> directions;
+        int dist = 0;
+        bool flag = false;
+        int height = 0;
+        findTarget(directions, dist, height, flag, root, start);
+
+        // cout<<height<<" "<<flag<<endl;
+
+        // for(int i=0;i<directions.size();i++) {
+        //     cout<<directions[i]->val<<" ";
+        // }
+
+        // int maxHeight = height;
+        // int rootToTarget = height;
+        // for(int i=0;i<directions.size()-1;i++) {
+        //     if(directions[i]->right && directions[i]->right ==
+        //     directions[i+1]) {
+        //         rootToTarget = max(maxHeight, BTHeight(root->right,
+        //         rootToTarget - 1)); maxHeight = max(maxHeight, rootToTarget);
+        //     } else if(directions[i]->left) {
+        //         rootToTarget = max(maxHeight, BTHeight(root->left,
+        //         rootToTarget + 1)); maxHeight = max(maxHeight, rootToTarget);
+        //     }
+        // }
+
+        // return maxHeight;
+
+        int maxHeight = height;
+        int rootToTarget = height;
+
+        // Step 1: height of target node's children (start baseHeight at 0)
+        maxHeight = BTHeight(directions.back(), 0);
+        rootToTarget = height;
+
+        // Step 2: traverse path from root to target excluding last node
+        for (int i = 0; i < directions.size() - 1; i++) {
+            TreeNode* curr = directions[i];
+            TreeNode* next = directions[i + 1];
+
+            if (curr->right == next) {
+                // Going down right child path (towards target) so decrement
+                rootToTarget = rootToTarget - 1;
+                // Calculate height of left subtree from curr: away from target
+                // so increment
+                int awaySideHeight = BTHeight(curr->left, rootToTarget + 1);
+                maxHeight = max(maxHeight, max(rootToTarget, awaySideHeight));
+            } else if (curr->left == next) {
+                // Going down left child path (towards target) so decrement
+                rootToTarget = rootToTarget - 1;
+                // Calculate height of right subtree from curr: away from target
+                // so increment
+                int awaySideHeight = BTHeight(curr->right, rootToTarget + 1);
+                maxHeight = max(maxHeight, max(rootToTarget, awaySideHeight));
+            }
+        }
+
+        return maxHeight;
+    }
+};
+
+Major TestCases:: (All Passed!!)
+
+First:
+Input
+root =
+[1,5,3,null,4,10,6,9,2]
+start =
+3
+Output
+2
+Expected
+4
+
+Second:
+
+if(root->val==start) case we have handled in above code, 
+root = [1,2,null,3,null,4,null,5]
+start = 1
+
+Third: 
+54/80 testcases passed.
+root = [1,2,null,3,null,4,null,5]
+start = 2
