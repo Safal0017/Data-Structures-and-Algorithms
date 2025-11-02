@@ -1,0 +1,135 @@
+LeftView: https://www.geeksforgeeks.org/problems/left-view-of-binary-tree/0
+
+Approach 1: Level Order Traversal and first Node of each level.
+class Solution {
+  public:
+    vector<int> leftView(Node *root) {
+        // code here
+        vector<int> ans;
+        
+        if(!root)
+        return ans;
+        
+        queue<Node*> q;
+        q.push(root);
+        
+        while(!q.empty()) {
+            int count = q.size();
+            int flag = 0;
+            
+            while(count) {
+                Node* node = q.front();
+                q.pop();
+                    
+                if(flag==0){
+                    ans.push_back(node->data);
+                    flag = 1;
+                }
+                    
+                if(node->left)
+                q.push(node->left);
+                
+                if(node->right)
+                q.push(node->right);
+                
+                count--;
+            }
+        }
+        return ans;
+    }
+};
+
+Approach 2: Recursive Approach, and Extra Array/Vector
+
+class Solution {
+    
+    int CalculateTotalLevels(Node* root) {
+        if(!root)
+        return 0;
+
+        return 1+max(CalculateTotalLevels(root->left), CalculateTotalLevels(root->right));
+    }
+
+    void LeftView(Node* root, vector<int> &resultset, vector<bool> &visited, int level) {
+        if(!root)
+        return;
+
+        if(visited[level]==0){
+            resultset.push_back(root->data);
+            visited[level] = 1;
+        }
+
+        LeftView(root->left, resultset, visited, level+1);
+        LeftView(root->right, resultset, visited, level+1);
+
+    }
+    
+  public:
+    vector<int> leftView(Node *root) {
+        // code here
+        
+        // Approach 2: 
+        vector<int> resultset;
+        if(!root)
+        return resultset;
+        
+        int levels = CalculateTotalLevels(root);
+        vector<bool> visited(levels, 0);
+        LeftView(root, resultset, visited, 0);
+        return resultset;
+    }
+};
+
+Approach 3: Recursive Approach and no Extra Space.
+
+/*
+class Node {
+public:
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int val) {
+        data = val;
+        left = nullptr;
+        right = nullptr;
+    }
+};
+*/
+
+class Solution {
+    
+    int CalculateTotalLevels(Node* root) {
+        if(!root)
+        return 0;
+
+        return 1+max(CalculateTotalLevels(root->left), CalculateTotalLevels(root->right));
+    }
+    
+    void LeftView(Node* root, vector<int> &resultset, int level) {
+        if(!root)
+        return;
+
+        if(resultset.size()==level){
+            resultset.push_back(root->data);
+        }
+
+        LeftView(root->left, resultset, level+1);
+        LeftView(root->right, resultset, level+1);
+
+    }
+    
+  public:
+    vector<int> leftView(Node *root) {
+        // code here
+        
+        //Approach 3
+        vector<int> resultset;
+        
+        if(!root)
+        return resultset;
+        
+        LeftView(root, resultset, 0);
+        return resultset;
+    }
+};
