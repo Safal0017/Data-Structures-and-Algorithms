@@ -1,0 +1,82 @@
+RightView
+
+Link: https://leetcode.com/problems/binary-tree-right-side-view/description/
+Link: https://www.geeksforgeeks.org/problems/right-view-of-binary-tree/1
+Approach 1: Same Level Order Traversal, insert right child first and then left child, and at each level, push the firstnode into the ans vector.
+Approach 2: Recursive Approach with extra space,
+
+class Solution {
+public:
+
+    void MakeMirrorTree(TreeNode* root) {
+        if(!root)
+        return;
+
+        swap(root->left, root->right);
+        MakeMirrorTree(root->left);
+        MakeMirrorTree(root->right);
+    }
+
+    int CalculateTotalLevels(TreeNode* root) {
+        if(!root)
+        return 0;
+
+        return 1+max(CalculateTotalLevels(root->left), CalculateTotalLevels(root->right));
+    }
+
+    void LeftView(TreeNode* root, vector<int> &resultset, vector<bool> &visited, int level) {
+        if(!root)
+        return;
+
+        if(visited[level]==0){
+            resultset.push_back(root->val);
+            visited[level] = 1;
+        }
+
+        LeftView(root->left, resultset, visited, level+1);
+        LeftView(root->right, resultset, visited, level+1);
+
+    }
+
+    vector<int> rightSideView(TreeNode* root) {
+        vector<int> resultset;
+        if(!root)
+        return resultset;
+
+        MakeMirrorTree(root);
+        int levels = CalculateTotalLevels(root);
+        vector<bool> visited(levels, 0);
+        LeftView(root, resultset, visited, 0);
+        return resultset;
+    }
+};
+
+Approach 3: Recursive approach without extra space, traverse right subtree first and then left subtree,
+
+class Solution {
+    
+    void RightView(Node* root, vector<int> &resultset, int level) {
+        if(!root)
+        return;
+
+        if(resultset.size()==level){
+            resultset.push_back(root->data);
+        }
+
+        RightView(root->right, resultset, level+1);
+        RightView(root->left, resultset, level+1);
+
+    }
+    
+  public:
+    vector<int> rightView(Node *root) {
+        //  code here
+        vector<int> resultset;
+        
+        if(!root)
+        return resultset;
+        
+        RightView(root, resultset, 0);
+        return resultset;
+    }
+};
