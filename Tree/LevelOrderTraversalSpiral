@@ -1,0 +1,171 @@
+Approach 1: https://www.geeksforgeeks.org/problems/level-order-traversal-in-spiral-form/0
+
+class Solution {
+  public:
+    vector<int> findSpiral(Node* root) {
+        // code here
+        //1 stack & 1 Queue Approach
+        vector<int> ans;
+        queue<Node*> q;
+        q.push(root);
+        int level = 0;
+        
+        while(!q.empty()) {
+            stack<int> s1;
+            //for Even levels (0,2,4)->RtoL
+            // count the size, store it in stack and then into vector.
+            if(level%2==0){ 
+                int count = q.size();
+                while(count) {
+                    
+                    Node* node = q.front();
+                    q.pop();
+                    
+                    s1.push(node->data);
+                    
+                    if(node->left)
+                    q.push(node->left);
+                    
+                    if(node->right)
+                    q.push(node->right);
+                    
+                    count--;
+                    
+                }
+                while(!s1.empty()) {
+                    ans.push_back(s1.top());
+                    s1.pop();
+                }
+            } else { //For Odd levels(1,3) directly from queue to vector.
+                int count = q.size();
+                
+                while(count) {
+                    
+                    Node* node = q.front();
+                    q.pop();
+                    
+                    ans.push_back(node->data);
+                    
+                    if(node->left)
+                    q.push(node->left);
+                    
+                    if(node->right)
+                    q.push(node->right);
+                    
+                    count--;
+                    
+                }
+            }
+            level++;
+        }
+        return ans;
+    }
+};
+
+
+Approach 2: https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/description/
+
+class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        vector<vector<int >> resultset;
+        vector<int> ans;
+
+        if(!root)
+        return resultset;
+
+        //Approach 1: A Queue and A Stack
+        // queue<TreeNode*> q;
+        // q.push(root);
+        // int level = 0;
+        
+        // while(!q.empty()) {
+        //     stack<int> s1;
+        //     if(level%2!=0){
+        //         int count = q.size();
+        //         while(count) {
+                    
+        //             TreeNode* node = q.front();
+        //             q.pop();
+                    
+        //             s1.push(node->val);
+                    
+        //             if(node->left)
+        //             q.push(node->left);
+                    
+        //             if(node->right)
+        //             q.push(node->right);
+                    
+        //             count--;
+                    
+        //         }
+        //         while(!s1.empty()) {
+        //             ans.push_back(s1.top());
+        //             s1.pop();
+        //         }
+        //     } else {
+        //         int count = q.size();
+                
+        //         while(count) {
+                    
+        //             TreeNode* node = q.front();
+        //             q.pop();
+                    
+        //             ans.push_back(node->val);
+                    
+        //             if(node->left)
+        //             q.push(node->left);
+                    
+        //             if(node->right)
+        //             q.push(node->right);
+                    
+        //             count--;
+                    
+        //         }
+        //     }
+        //     level++;
+        //     resultset.push_back(ans);
+        //     ans.clear();
+        // }
+        // return resultset;
+
+        //Approach 2: 2 Stacks
+        //In here, odd levels(1,3) R->L, and even levels(0,2,4) L->R
+        stack<TreeNode*> RtoL;
+        stack<TreeNode*> LtoR;
+
+        LtoR.push(root);
+        while(!RtoL.empty() || !LtoR.empty()) {
+            if(!LtoR.empty()) {
+                while(!LtoR.empty()) {
+                    TreeNode* node = LtoR.top();
+                    LtoR.pop();
+
+                    ans.push_back(node->val);
+
+                    if(node->left)
+                    RtoL.push(node->left);
+
+                    if(node->right)
+                    RtoL.push(node->right);
+                }
+            } else {
+                while(!RtoL.empty()) {
+                    TreeNode* node = RtoL.top();
+                    RtoL.pop();
+
+                    ans.push_back(node->val);
+
+                    if(node->right)
+                    LtoR.push(node->right);
+
+                    if(node->left)
+                    LtoR.push(node->left);
+                }
+            }
+            resultset.push_back(ans);
+            ans.clear();
+        }
+        return resultset;
+    }
+};
