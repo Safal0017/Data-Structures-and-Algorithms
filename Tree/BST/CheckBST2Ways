@@ -1,0 +1,50 @@
+//LINK: https://leetcode.com/problems/validate-binary-search-tree/description/
+//Unique elements, should be strictly increasing.
+
+class Solution {
+
+    // void inorder(vector<int> &arr, TreeNode* root) {
+    //     if(!root)
+    //     return;
+
+    //     inorder(arr, root->left);
+    //     arr.push_back(root->val);
+    //     inorder(arr, root->right);
+    // }
+
+    bool inorder(TreeNode* root, long long &prev) {
+        if (!root)
+            return 1;
+
+        bool leftSide = inorder(root->left, prev);
+
+        if (!leftSide)
+            return 0;
+
+        // if(prev!=INT_MIN)
+        if (root->val <= prev)
+        return 0;
+
+        prev = root->val;
+        return inorder(root->right, prev);
+    }
+
+public:
+    bool isValidBST(TreeNode* root) {
+        // Method 1->Extra Space in form of Arr;
+        //  vector<int> arr;
+        //  inorder(arr, root);
+        //  //check if inorder of binary tree is sorted then it is valid BST.
+        //  for(int i=1;i<arr.size();i++) {
+        //      if(arr[i]<=arr[i-1])
+        //      return 0;
+        //  }
+        //  return 1;
+
+        // Method 2: Using a global variable.
+
+        // int prev = INT_MIN;
+        long long prev = (long long)INT_MIN - 1;
+        return inorder(root, prev);
+    }
+};
