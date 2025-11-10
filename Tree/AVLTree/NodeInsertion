@@ -136,3 +136,9 @@ int main()
 
     return 0;
 }
+
+//Expected Output
+// PreOrder: 
+// 20 10 5 50 30 95 70 100 
+// InOrder: 
+// 5 10 20 30 50 70 95 100
