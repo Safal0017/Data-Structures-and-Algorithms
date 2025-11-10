@@ -1,0 +1,131 @@
+LINK:https://www.geeksforgeeks.org/problems/avl-tree-deletion/1
+
+
+int getHeight(Node *root) {
+    if(!root)
+    return 0;
+    
+    return 1+max(getHeight(root->left), getHeight(root->right));
+}   
+
+int getBalance(Node *root) {
+    return getHeight(root->left)-getHeight(root->right);
+}
+
+Node* LeftRotate(Node* root) {
+    
+    Node* child = root->right;
+    Node* leftChild = child->left;
+    child->left = root;
+    root->right = leftChild;
+    
+    //Update the height (root & then child)
+    root->height = 1+max(getHeight(root->left), getHeight(root->right));
+    child->height = 1+max(getHeight(child->left), getHeight(child->right));
+    
+    return child;
+    
+}
+
+Node* RightRotate(Node* root) {
+    
+    Node* child = root->left;
+    Node* rightChild = child->right;
+    child->right = root;
+    root->left = rightChild;
+    
+    //Update the height (root & then child)
+    root->height = 1+max(getHeight(root->left), getHeight(root->right));
+    child->height = 1+max(getHeight(child->left), getHeight(child->right));
+    
+    return child;
+    
+}
+  
+
+Node* deleteNode(Node* root, int data) {
+    // add code here,
+    
+    //Doesn't Exists(Root)
+    if(!root)
+    return NULL;
+    
+    //Exists(Root)
+    if(data<root->data) //LeftSide
+    root->left = deleteNode(root->left, data);
+    else if(data>root->data) //RightSide
+    root->right = deleteNode(root->right, data);
+    else //root->data == data(key to be deleted)
+    {
+        
+        //LeafNode
+        if(!root->left && !root->right)
+        {
+            delete root;
+            return NULL;
+        }
+        //Single Child
+        else if(root->left && !root->right) { //Only left child
+            Node* temp = root->left;
+            delete root;
+            return temp;
+        } else if(!root->left && root->right) { //Only Right Child
+            Node* temp = root->right;
+            delete root;
+            return temp;
+        } 
+        
+        //Both Child Exists
+        else {
+            
+            //RightSubtree, leftMostNode(min)
+            Node* curr = root->right;
+            while(curr->left) {
+                curr = curr->left;
+            }
+            
+            //Replace the value of it with root node
+            root->data = curr->data;
+            root->right = deleteNode(root->right, curr->data);
+            
+        }
+        
+    }
+    
+    //Update the height
+    root->height = 1+max(getHeight(root->left), getHeight(root->right));
+    
+    //Check the balance
+    int balance = getBalance(root);
+    
+    //LL (balance > 1 && getBalance(root->left)>=0) -> RightRotate(topE)
+    //LR (balance > 1 && getBalance(root->left)<0) -> LeftRotate(midE)+RightRotate(topE)
+    //RR (balance < -1 && getBalance(root->right)<=0) -> LeftRotate(topE)
+    //RL (balance < -1 && getBalance(root->right)>0) -> RightRotate(midE)+LeftRotate(topE)
+    
+    //Cases:
+    
+    //LeftSide Unbalance (LL or LR)
+    if(balance > 1) {
+        
+        if(getBalance(root->left)<0) {  //LR
+            root->left = LeftRotate(root->left);
+            return RightRotate(root);
+        } else { //LL
+            return RightRotate(root);
+        }
+        
+    } else if(balance < -1) { //RightSide Unbalance (RL or RR)
+        
+        if(getBalance(root->right)>0) {  //RL
+            root->right = RightRotate(root->right);
+            return LeftRotate(root);
+        } else { //RR
+            return LeftRotate(root);
+        }
+        
+    } else
+        return root;
+       
+    
+}
