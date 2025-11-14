@@ -1,0 +1,40 @@
+LINK1: https://leetcode.com/problems/binary-tree-maximum-path-sum/
+LINK2: https://www.geeksforgeeks.org/problems/maximum-path-sum-from-any-node/1
+
+CODE:
+
+//Any Node (Not specifically leaf node)
+class Solution {
+
+    int getVal(int &maxh, TreeNode* root) {
+        if(!root)
+        return 0;
+
+        int leftSide = getVal(maxh, root->left);
+        int rightSide = getVal(maxh, root->right);
+
+        int currh = root->val + leftSide + rightSide;
+        //3 conditions
+        //root->val or root->val+max(left,right), root->val+left+right
+        //then update maxh
+        int temp = root->val + max(leftSide, rightSide);
+        currh = max(currh, temp);
+        currh = max(root->val, currh);
+
+        maxh = max(maxh, currh);
+
+        //for main return from root node,
+        return max(root->val, root->val+max(leftSide, rightSide));
+    }
+
+public:
+    int maxPathSum(TreeNode* root) {
+
+        if (!root)
+            return 0;
+
+        int maxh = INT_MIN;
+        int height = getVal(maxh, root);
+        return max(height, maxh);
+    }
+};
