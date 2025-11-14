@@ -1,0 +1,78 @@
+LINK:https://leetcode.com/problems/amount-of-time-for-binary-tree-to-be-infected/
+
+
+class Solution {
+
+    int BTHeight(TreeNode* root) {
+        if (!root)
+            return 0; 
+        return 1 + max(BTHeight(root->left), BTHeight(root->right));
+    }
+
+    int findTarget(TreeNode* root, int &start, vector<TreeNode*> &directions) {
+        if(!root)
+        return 0;
+
+        directions.push_back(root);
+
+        if(root->val == start){
+            return 1;
+        }
+
+        int leftSide = findTarget(root->left, start, directions);
+        int rightSide = findTarget(root->right, start, directions);
+
+        //If any side returns 1, curr node will be persisted, else removed
+        if(!(leftSide || rightSide))
+        directions.pop_back();
+
+        return (leftSide || rightSide);
+    }
+
+public:
+    int amountOfTime(TreeNode* root, int start) {
+
+        if (!root)
+            return 0;
+
+        vector<TreeNode*> directions;
+        findTarget(root, start, directions);
+        for(int i=0;i<directions.size();i++){
+            cout<<directions[i]->val<<" ";
+        }
+        // return 0;
+
+        if(root->val == start){
+            return BTHeight(root)-1;
+        }
+
+
+        int currh = 0;
+        int height = 0;
+        int maxcurrh = directions.size()-1;
+
+        for(int i=0;i<directions.size()-1;i++) {
+            currh = directions.size()-1-i;
+            if(directions[i+1] == directions[i]->right) {
+                //AwaySide = leftSide, calculate it's max height,
+                // height = BTHeight(root->left); //my mistake (it is direction[i])
+                height = BTHeight(directions[i]->left);
+                currh = max(currh, currh+height);
+                maxcurrh = max(maxcurrh, currh);
+            } else {
+                //AwaySide = rightSide, calculate it's max height,
+                // height = BTHeight(root->right); //my mistake (it is direction[i])
+                height = BTHeight(directions[i]->right);
+                currh = max(currh, currh+height);
+                maxcurrh = max(maxcurrh, currh);
+            }
+        }
+
+        //Now Formulate max height of target and it's beneath
+        int targetHeight = BTHeight(directions[directions.size()-1])-1;
+        currh = max(currh, targetHeight);
+        maxcurrh = max(maxcurrh, currh);
+        return maxcurrh;
+
+    }
+};
