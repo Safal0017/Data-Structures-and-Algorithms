@@ -1,0 +1,133 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left),
+ * right(right) {}
+ * };
+ */
+
+struct NodeRange {
+    TreeNode* node;
+    long long minVal;
+    long long maxVal;
+    NodeRange(TreeNode* n, long long minV, long long maxV)
+        : node(n), minVal(minV), maxVal(maxV) {}
+};
+class Solution {
+
+    //For Method 1,
+    // void inorder(vector<int> &arr, TreeNode* root) {
+    //     if(!root)
+    //     return;
+
+    //     inorder(arr, root->left);
+    //     arr.push_back(root->val);
+    //     inorder(arr, root->right);
+    // }
+
+    //For Method 2,
+    // bool inorder(TreeNode* root, long long& prev) {
+    //     if (!root)
+    //         return 1;
+
+    //     bool leftSide = inorder(root->left, prev);
+
+    //     if (!leftSide)
+    //         return 0;
+
+    //     // if(prev!=INT_MIN)
+    //     if (root->val <= prev)
+    //         return 0;
+
+    //     prev = root->val;
+    //     return inorder(root->right, prev);
+    // }
+
+    //For Method 3,
+    // bool preorder(TreeNode* root, long long max, long long min) {
+    //     if(!root)
+    //     return true;
+
+    //     if(root->val >= max || root->val <= min)
+    //     return false;
+
+    //     return preorder(root->left, root->val, min) && preorder(root->right, max, root->val);
+    // }
+
+public:
+    bool isValidBST(TreeNode* root) {
+        // Method 1->Extra Space in form of Arr;
+        //  vector<int> arr;
+        //  inorder(arr, root);
+        //  //check if inorder of binary tree is sorted then it is valid BST.
+        //  for(int i=1;i<arr.size();i++) {
+        //      if(arr[i]<=arr[i-1])
+        //      return 0;
+        //  }
+        //  return 1;
+
+        // Method 2: Using a global variable.
+
+        // int prev = INT_MIN;
+        // long long prev = (long long)INT_MIN - 1;
+        // return inorder(root, prev);
+
+        //Method 3, Defining a range for a particular node, and validating it while
+        //preOrder Traversal.
+        // return preorder(root, (long long)INT_MAX + 1, (long long)INT_MIN - 1);
+
+        // Method 4, Defining a range for a particular node, and validating it while 
+        // performing level order traversal
+        if (!root)
+            return true;
+
+        queue<NodeRange> q;
+        q.push(NodeRange(root, LLONG_MIN, LLONG_MAX));
+
+        while (!q.empty()) {
+            NodeRange current = q.front();
+            q.pop();
+            TreeNode* node = current.node;
+
+            if (node->val <= current.minVal || node->val >= current.maxVal)
+                return false;
+
+            if (node->left)
+                q.push(NodeRange(node->left, current.minVal, node->val));
+            if (node->right)
+                q.push(NodeRange(node->right, node->val, current.maxVal));
+        }
+
+        return true;
+    }
+};
+
+//EDGE CASE
+
+//1
+// Input
+// root =
+// [2,2,2]
+
+// Use Testcase
+// Output
+// true
+// Expected
+// false
+
+
+//2
+// Input
+// root =
+// [2147483647]
+
+// Use Testcase
+// Output
+// false
+// Expected
+// true
