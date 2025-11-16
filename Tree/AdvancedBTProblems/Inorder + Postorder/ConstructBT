@@ -1,0 +1,50 @@
+LINK: https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left),
+ * right(right) {}
+ * };
+ */
+class Solution {
+
+    int findPos(vector<int>& inorder, TreeNode* root) {
+        for (int i = 0; i < inorder.size(); i++) {
+            if (inorder[i] == root->val)
+                return i;
+        }
+        return 0;
+    }
+
+    TreeNode* NodeCreation(vector<int>& inorder, vector<int>& postorder,
+                           int index, int inStart, int inEnd) {
+
+        if (inStart > inEnd)
+            return NULL;
+
+        TreeNode* temp = new TreeNode(postorder[index]);
+        int pos = findPos(inorder, temp);
+        temp->right =
+            NodeCreation(inorder, postorder, index-1, pos + 1, inEnd);
+        // int IndexRangeLeft = index - inEnd + pos - 1;
+        int rightSubtreeSize = inEnd - pos;
+        int leftSubtreeRootIndex = index - rightSubtreeSize - 1;
+        temp->left =
+            NodeCreation(inorder, postorder, leftSubtreeRootIndex, inStart, pos - 1);
+        
+        return temp;
+    }
+
+public:
+    TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+        return NodeCreation(inorder, postorder, postorder.size()-1, 0, inorder.size() - 1);
+    }
+};
+
+//Properly handle pos, index, InEnd and InStart as it may get confuse with inorder+preorder Logic (Only minor changes Needed).
