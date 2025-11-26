@@ -1,0 +1,197 @@
+LINK: https://www.geeksforgeeks.org/problems/boundary-traversal-of-binary-tree/1
+
+/*
+class Node {
+  public:
+    int data;
+    Node* left;
+    Node* right;
+
+    // Constructor to initialize a new node
+    Node(int val) {
+        data = val;
+        left = NULL;
+        right = NULL;
+    }
+};
+*/
+
+class Solution {
+    
+    // void collectLeft(Node* root, vector<int> &ans) {
+    //     if(!root || (!root->left && !root->right))
+    //     return;
+        
+    //     ans.push_back(root->data);
+    //     if(root->left)
+    //     collectLeft(root->left, ans);
+    //     else
+    //     collectLeft(root->right, ans);
+        
+    // }
+    
+    // void collectLeafNodes(Node* root, vector<int> &ans) {
+    //     if(!root)
+    //     return;
+        
+    //     if(!root->left && !root->right) {
+    //         ans.push_back(root->data);
+    //         return;
+    //     }
+        
+        
+    //     collectLeafNodes(root->left, ans);
+    //     collectLeafNodes(root->right, ans);
+    // }
+    
+    // void collectRight(Node* root, vector<int> &ans) {
+        
+    //     if(!root || !root->left && !root->right)
+    //     return;
+        
+    //     if(root->right)
+    //     collectRight(root->right, ans);
+    //     else
+    //     collectRight(root->left, ans);
+        
+    //     ans.push_back(root->data);
+        
+    // }
+    
+    bool isLeaf(Node *node) {
+        return node->left == nullptr && node->right == nullptr;
+    }
+
+    // Function to collect the left boundary nodes
+    void collectLeft(Node *root, vector<int> &res) {
+        if (root == nullptr)
+            return;
+    
+        Node *curr = root;
+        while (!isLeaf(curr)) {
+            res.push_back(curr->data);
+    
+            if (curr->left)
+                curr = curr->left;
+            else
+                curr = curr->right;
+        }
+    }
+
+    // Function to collect the leaf nodes using Morris Traversal
+    void collectLeaves(Node* root, vector<int>& res) {
+        Node* current = root;
+    
+        while (current) {
+            if (current->left == nullptr) {
+              
+                // If it's a leaf node
+                //Specifically for RightMostNode of Right Subtree
+                //where link will never be created.
+                if (current->right == nullptr) 
+                    res.push_back(current->data);
+                
+                current = current->right;
+            } 
+          	else {
+              
+                // Find the inorder predecessor
+                //To Find RightMost Ele of left Subtree
+                Node* predecessor = current->left;
+                while (predecessor->right && predecessor->right != current) {
+                    predecessor = predecessor->right;
+                }
+    
+                //Creating link & going left (from the parent)
+                if (predecessor->right == nullptr) {
+                    predecessor->right = current;
+                    current = current->left;
+                } 
+              	else {
+              	    
+                  	// If it's predecessor is a leaf node
+                  	
+                  	//Storing Node as a leaf
+                  	//+ Breaking link
+                  	//+ going right (from the parent)
+                  	
+                    if (predecessor->left == nullptr) 
+                        res.push_back(predecessor->data);
+                    
+                    predecessor->right = nullptr;
+                    current = current->right;
+                }
+            }
+        }
+    }
+
+    // Function to collect the right boundary nodes
+    void collectRight(Node *root, vector<int> &res) {
+        if (root == nullptr)
+            return;
+    
+        Node *curr = root;
+        vector<int> temp;
+        while (!isLeaf(curr)) {
+          
+            temp.push_back(curr->data);
+    
+            if (curr->right)
+                curr = curr->right;
+            else
+                curr = curr->left;
+        }
+        for (int i = temp.size() - 1; i >= 0; --i)
+            res.push_back(temp[i]);
+    }
+
+    
+  public:
+    vector<int> boundaryTraversal(Node *root) {
+        // code here
+        vector<int> ans;
+        
+        if(!root)
+        return ans;
+        
+        //Approach 1: 
+        //Using Recursive preorder collectLeft
+        //Using Recursive preorder collectLeafNode
+        //Using Recursive postorder to collectRight in reverse order.
+        
+        //Push root (if not leaf)
+        // if(root->left || root->right)
+        // ans.push_back(root->data);
+        
+        // //Left Boundary Nodes(Except Leaf)
+        // collectLeft(root->left, ans);
+        
+        // //Collect Leaf Nodes
+        // collectLeafNodes(root, ans);
+        
+        // //Reverse Right Boundary Nodes (Except Leaf)
+        // collectRight(root->right, ans);
+        
+        //Approach 2: 
+        //Optimizing Space Complexity by
+        //Using iterative methods to collect leftBoundaryNodes & rev RightBoundaryNodes
+        //+ Using Morris Traversal to collect Leaves, avoiding SC occupied by recursive stack.
+        
+        // Add root data if it's not a leaf
+        if (!isLeaf(root))
+            ans.push_back(root->data);
+    
+        // Collect left boundary
+        collectLeft(root->left, ans);
+    
+        // Collect leaf nodes
+        collectLeaves(root, ans);
+    
+        // Collect right boundary
+        collectRight(root->right, ans);
+        
+        
+        return ans;
+        
+    }
+};
