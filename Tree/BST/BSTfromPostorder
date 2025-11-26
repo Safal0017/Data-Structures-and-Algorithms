@@ -1,0 +1,72 @@
+Construct BST from Postorder: https://www.geeksforgeeks.org/problems/construct-bst-from-post-order/1
+
+
+/*struct Node
+{
+    int data;
+    Node *left, *right;
+};*/
+
+// int findPos(vector<int>& inorder, Node* root) {
+//         for (int i = 0; i < inorder.size(); i++) {
+//             if (inorder[i] == root->data)
+//                 return i;
+//         }
+//         return 0;
+//     }
+
+//     Node* NodeCreation(vector<int>& inorder, vector<int>& postorder,
+//                           int index, int inStart, int inEnd) {
+
+//         if (inStart > inEnd)
+//             return NULL;
+
+//         Node* temp = new Node(postorder[index]);
+//         int pos = findPos(inorder, temp);
+//         temp->right =
+//             NodeCreation(inorder, postorder, index-1, pos + 1, inEnd);
+//         // int IndexRangeLeft = index - inEnd + pos - 1;
+//         int rightSubtreeSize = inEnd - pos;
+//         int leftSubtreeRootIndex = index - rightSubtreeSize - 1;
+//         temp->left =
+//             NodeCreation(inorder, postorder, leftSubtreeRootIndex, inStart, pos - 1);
+        
+//         return temp;
+//     }
+    
+//     Node* buildTree(vector<int>& inorder, vector<int>& postorder) {
+//         return NodeCreation(inorder, postorder, postorder.size()-1, 0, inorder.size() - 1);
+//     }
+
+Node* BST(int post[], int lower, int upper, int &index) {
+    
+    //Base case:
+    if(index < 0 || post[index] < lower || post[index] > upper)
+    return NULL;
+    
+    Node* root = new Node(post[index--]);
+    
+    root->right = BST(post, root->data, upper, index);
+    root->left = BST(post, lower, root->data, index);
+    return root;
+}
+
+Node *constructTree(int post[], int size) {
+    // code here
+    //Approach 1:
+    //Using normal inorder postorder Binary Tree Creation,
+    //(for BST, inorder can be formulated using sort(postorder))
+    // int N = size;
+    // vector<int> postorder;
+    // postorder.insert(postorder.begin(), post, post + N);
+    // vector<int> inorder = postorder;
+    // sort(inorder.begin(), inorder.end());
+    // return buildTree(inorder, postorder);
+    
+    //Approach 2: O(n) Time complexity
+    if(size == 0)
+    return NULL;
+    
+    int index = size-1;
+    return BST(post, INT_MIN, INT_MAX, index);
+}
