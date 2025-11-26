@@ -1,0 +1,81 @@
+Construct BST from preorder: https://leetcode.com/problems/construct-binary-search-tree-from-preorder-traversal/
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+
+// int findPos(vector<int> &inorder, TreeNode* root) {
+//         for(int i=0;i<inorder.size();i++) {
+//             if(inorder[i] == root->val)
+//             return i;
+//         }
+//         return 0;
+//     }
+
+//     TreeNode* NodeCreation(vector<int> &inorder, vector<int> &preorder, int index, 
+//     int inStart, int inEnd) {
+
+//         if(inStart > inEnd)
+//         return NULL;
+
+//         TreeNode* temp = new TreeNode(preorder[index]);
+//         int pos = findPos(inorder, temp);
+//         temp->left = NodeCreation(inorder, preorder, index+1, inStart, pos-1);
+//         int IndexRangeRight = index + pos-inStart + 1;
+//         temp->right = NodeCreation(inorder, preorder, IndexRangeRight, pos+1, inEnd);
+//         return temp;
+
+//     }
+
+//     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+//         return NodeCreation(inorder, preorder, 0, 0, inorder.size()-1);
+//     }
+
+TreeNode* BST(vector<int>&preorder, int lower, int upper, int &index) {
+
+    if(index >= preorder.size() || preorder[index] > upper || preorder[index] < lower)
+    return NULL;
+
+    TreeNode* root = new TreeNode(preorder[index++]);
+    root->left = BST(preorder, lower, root->val, index);
+    root->right = BST(preorder, root->val, upper, index);
+    return root;
+
+}
+
+public:
+    TreeNode* bstFromPreorder(vector<int>& preorder) {
+        //Approach 1:
+        //using normal preorder & inorder tree creation, 
+        //(for bst inorder can be formulated by sort(preorder))
+        // vector<int> inorder = preorder;
+        // sort(inorder.begin(), inorder.end());
+        // return buildTree(preorder, inorder);
+
+        //Approach 2: O(n^2)
+        //Normal tree creation as we do, 
+        //val < root->data -> leftside
+        //& val > root->data -> rightside
+
+        //Approach 3: O(n^2)
+        //Partioning, 
+        //First Node creation(preorder[index]) then find pos of first largest element on rightside,
+        //element after that pos ele, rightside, element before that pos ele, leftside
+
+        //Approach 4: O(n)
+        if(preorder.size()==0)
+        return NULL;
+        int index = 0;
+        return BST(preorder, INT_MIN, INT_MAX, index);
+    }
+};
