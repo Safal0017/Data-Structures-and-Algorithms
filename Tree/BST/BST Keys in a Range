@@ -1,0 +1,40 @@
+Print BST Elements in a given range
+LINK: https://www.geeksforgeeks.org/problems/print-bst-elements-in-given-range/1
+
+class Solution {
+    
+    void BSTInARange(Node* root, int low, int high, vector<int>&ans) {
+        if(!root)
+        return;
+        
+        //root is out of range and elements in a range are present in left subtree
+        if(root->data > low && root->data > high)
+        BSTInARange(root->left, low, high, ans);
+        //root is out of range and elements in a range are present in right subtree
+        else if(root->data < low)
+        BSTInARange(root->right, low, high, ans);
+        //Element is in the range, first check it's left subtree then node, then right subtree
+        else {
+            BSTInARange(root->left, low, high, ans);
+            ans.push_back(root->data);
+            BSTInARange(root->right, low, high, ans);
+        }
+    }
+    
+  public:
+    vector<int> printNearNodes(Node *root, int low, int high) {
+        // code here
+        vector<int> ans;
+        
+        if(!root)
+        return ans;
+
+        //Approach 1:
+        //Normal Inorder traversal, storing elements in a vector and eliminating elements during range check.
+
+        //Approach 2:
+        //Range check, and push into the vector only if it is in the range
+        BSTInARange(root, low, high, ans);
+        return ans;
+    }
+};
