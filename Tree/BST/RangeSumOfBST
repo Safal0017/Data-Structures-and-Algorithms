@@ -1,0 +1,55 @@
+Sum of Elements in the given range BST
+Link:https://leetcode.com/problems/range-sum-of-bst/
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left),
+ * right(right) {}
+ * };
+ */
+class Solution {
+
+    void BSTInARange(TreeNode* root, int low, int high, int& ans) {
+        if (!root)
+            return;
+
+        // root is out of range and elements in a range are present in left
+        // subtree
+        if (root->val > low && root->val > high)
+            BSTInARange(root->left, low, high, ans);
+        // root is out of range and elements in a range are present in right
+        // subtree
+        else if (root->val < low)
+            BSTInARange(root->right, low, high, ans);
+        // Element is in the range, first check it's left subtree then node,
+        // then right subtree
+        else {
+            BSTInARange(root->left, low, high, ans);
+            ans += root->val;
+            BSTInARange(root->right, low, high, ans);
+        }
+    }
+
+public:
+    int rangeSumBST(TreeNode* root, int low, int high) {
+        int ans = 0;
+
+        if (!root)
+            return ans;
+
+        // Approach 1:
+        // Normal Inorder traversal, storing elements in a vector and
+        // adding elements to the sum only if they are within the range.
+
+        // Approach 2:
+        // Range check, and add to the sum only if it is in the range
+        BSTInARange(root, low, high, ans);
+        return ans;
+    }
+};
