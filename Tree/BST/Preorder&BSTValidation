@@ -30,8 +30,45 @@ class Solution {
         // code here
         if(N == 0)
         return 1;
-        int index = 0;
-        PreorderBST(arr, index, INT_MIN, INT_MAX, N);
-        return index==N;
+        
+        //Approach 1
+        //Using recursive stack, T.C: 0(N), S.C: 0(N)
+        // int index = 0;
+        // PreorderBST(arr, index, INT_MIN, INT_MAX, N);
+        // return index==N;
+        
+        //Approach 2:
+        //Using Iterative stack approach & STL for range check,
+        //T.C: 0(N), S.C: 0(N)
+        stack<int> lower;
+        stack<int> upper;
+        lower.push(INT_MIN);
+        upper.push(INT_MAX);
+        
+        for(int i=0;i<N;i++) {
+            
+            //Out of range & ans not possible.
+            if(arr[i]<lower.top())
+            return 0; 
+            
+            //Out of range & pop until it satisfies the range
+            while(arr[i]>upper.top()) {
+                upper.pop();
+                lower.pop();
+            }
+            
+            //Within the range, and make changes to right & left range based on curr node
+            int left = lower.top();
+            int right = upper.top();
+            lower.pop();
+            upper.pop();
+            lower.push(arr[i]);
+            upper.push(right);
+            lower.push(left);
+            upper.push(arr[i]);
+            
+        }
+        return 1;
+        
     }
 };
