@@ -1,0 +1,8 @@
+Minimal Changes Made 
+1. Fixed dangling pointer: Capture top1->right and top2->right before any pop() calls 
+2. Set correct next pointers: Assign next1 = top1->right and next2 = top2
+>right in all branches (equal, s1>s2, s2>s1) 
+3. Added missing return ans at the end 
+4. Minor cleanup: Commas in declarations, removed comments for brevity 
+Key insight: Always get right child before popping, and set nextX in every case so the 
+correct subtree gets explored.
