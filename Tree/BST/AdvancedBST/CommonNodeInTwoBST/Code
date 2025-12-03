@@ -1,0 +1,85 @@
+Link: https://www.geeksforgeeks.org/problems/print-common-nodes-in-bst/1
+
+
+class Solution {
+  public:
+    // Function to find the nodes that are common in both BST.
+    vector<int> findCommon(Node *r1, Node *r2) {
+        // Your code here
+        stack<Node*> s1;
+        stack<Node*> s2;
+        
+        vector<int> ans;
+        
+        if(!r1 || !r2)
+        return ans;
+        
+        //Approach 1:
+        //create 2 inorder vector for bst1 & bst2
+        //Using 2 pointers, compare, and push common elements into the ans vector.
+        
+        //Approach 2:
+        //root+all left elements into the stack. (iterative stack all left elements approach).
+        
+        // s1.push(r1);
+        // s2.push(r2);
+        
+        Node* next1 = r1;
+        Node* next2 = r2;
+        
+        //All the left side, push into the s1
+        while(next1) { 
+            s1.push(next1);
+            next1 = next1->left;
+        }
+        
+        //All the left side, push into the s2
+        while(next2) { 
+            s2.push(next2);
+            next2 = next2->left;
+        }
+        
+        
+        while(!s1.empty()&&!s2.empty()) {
+            
+            Node* top1 = s1.top();
+            Node* top2 = s2.top();
+            
+            //s1 == s2 top elements equal
+            if(top1->data == top2->data) {
+                ans.push_back(top1->data);
+                s1.pop();
+                s2.pop();
+                next1 = top1->right;
+                next2 = top2->right;
+            }
+            
+            //s1 > s2
+            else if(top1->data>top2->data) {
+                next2 = top2->right;
+                s2.pop();
+            }
+            
+            //s2 > s1
+            else {
+                next1 = top1->right;
+                s1.pop();    
+            }
+            
+            //All the left side, push into the s1
+            while(next1) { 
+                s1.push(next1);
+                next1 = next1->left;
+            }
+            
+            //All the left side, push into the s2
+            while(next2) { 
+                s2.push(next2);
+                next2 = next2->left;
+            }
+            
+            
+        }
+    }
+
+};
