@@ -1,0 +1,37 @@
+LINK:https://www.geeksforgeeks.org/problems/preorder-traversal-and-bst4006/1
+
+// User function Template for C++
+
+class Node {
+public:
+	int data;
+	Node* left;
+	Node* right;
+	Node(int value) {
+		data = value;
+		left = right = NULL;
+	}
+};
+
+class Solution {
+    
+    Node* PreorderBST(int arr[], int &index, int lower, int upper, int N) {
+        if(index>=N || arr[index]<lower || arr[index]>upper)
+        return NULL;
+        
+        Node* root = new Node(arr[index++]);
+        root->left = PreorderBST(arr, index, lower, root->data, N);
+        root->right = PreorderBST(arr, index, root->data, upper, N);
+        return root;
+    }
+    
+  public:
+    int canRepresentBST(int arr[], int N) {
+        // code here
+        if(N == 0)
+        return 1;
+        int index = 0;
+        PreorderBST(arr, index, INT_MIN, INT_MAX, N);
+        return index==N;
+    }
+};
