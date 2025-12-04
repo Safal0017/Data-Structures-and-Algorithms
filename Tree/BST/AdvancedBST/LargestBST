@@ -1,0 +1,119 @@
+Link:
+GFG: https://www.geeksforgeeks.org/problems/largest-bst/1
+
+Code:
+
+/* Tree node structure  used in the program
+
+struct Node {
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};*/
+
+class Box {
+    public:
+    bool BST;
+    int size;
+    int min, max;
+    Box(int data) {
+        BST = 1;
+        size = 1;
+        min = data;
+        max = data;
+    }
+};
+
+class Solution {
+    
+    Box* find(Node* root, int &totalSize) {
+        //Leaf Nodes
+        //Only LeftSide Exist
+        //Only RightSide Exist
+        //Both Sides Exists
+        
+        //Leaf Nodes
+        if(!root->left && !root->right) {
+            totalSize = max(totalSize, 1);
+            return new Box(root->data);    
+        }
+        
+        
+        //Only LeftSide Exist
+        else if(!root->right && root->left) {
+            Box* head = find(root->left, totalSize);
+            //leftside BST 
+            if(head->BST && head->max<root->data) {
+                head->size++;
+                head->max = root->data;
+                totalSize = max(totalSize, head->size);
+                return head;
+            } 
+            //leftSide Not BST
+            else {
+                head->BST = 0;
+                return head;
+            }
+        }
+        
+        //Only RightSide Exist
+        else if(!root->left && root->right) {
+            Box* head = find(root->right, totalSize);
+            //leftside BST 
+            if(head->BST && head->min>root->data) {
+                head->size++;
+                head->min = root->data;
+                totalSize = max(totalSize, head->size);
+                return head;
+            } 
+            //leftSide Not BST
+            else {
+                head->BST = 0;
+                return head;
+            }
+        }
+        
+        
+        //Both Sides Exists
+        else {
+            
+            Box* LeftHead = find(root->left, totalSize);
+            Box* RightHead = find(root->right, totalSize);
+            
+            //Both BST
+            
+            if(LeftHead->BST && RightHead->BST && 
+            LeftHead->max < root->data && RightHead->min > root->data) {
+                Box* head = new Box(root->data);
+                head->size += LeftHead->size+RightHead->size;
+                head->min = LeftHead->min;
+                head->max = RightHead->max;
+                totalSize = max(totalSize, head->size);
+                return head;
+            } 
+            //Not BST
+            else {
+                LeftHead->BST=0;
+                return LeftHead;
+            }
+            
+        }
+    }
+    
+  public:
+    /*You are required to complete this method */
+    // Return the size of the largest sub-tree which is also a BST
+    int largestBst(Node *root) {
+        // Your code here
+        int totalSize = 0;
+        find(root, totalSize);
+        return totalSize;
+    }
+};
+
+//Dry Run on [10, 20, 30, 12, 19, 20, 40, N, N, N, N, 15, 25] to get clarity.
