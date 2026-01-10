@@ -1,0 +1,67 @@
+Problem: 214. Shortest Palindrome
+Link: https://leetcode.com/problems/shortest-palindrome/?envType=problem-list-v2&envId=string-matching
+
+Problem Statement: You are given a string s. You can convert s to a palindrome by adding characters in front of it.
+
+Return the shortest palindrome you can find by performing this transformation.
+
+Example 1:
+
+Input: s = "aacecaaa"
+Output: "aaacecaaa"
+Example 2:
+
+Input: s = "abcd"
+Output: "dcbabcd"
+ 
+
+Constraints:
+
+0 <= s.length <= 5 * 104
+s consists of lowercase English letters only.
+
+
+CODE: (Soln derived from "Min Chars to Add for Palindrome")
+
+class Solution {
+public:
+
+    void findlps(vector<int> &lps, string &s) {
+        
+        int pre = 0, suff = 1;
+        while(suff < s.size()) {
+            if(s[pre]==s[suff]) {
+                lps[suff] = pre+1;
+                pre++, suff++;
+            } else {
+                if(pre == 0){
+                    lps[suff] = 0;
+                    suff++;
+                } else {
+                    pre = lps[pre-1];
+                }
+            }
+        }
+        
+    }
+
+    string shortestPalindrome(string s) {
+        int n = s.size(); //Original Size
+        string originalStr = s;
+        string temp = s;
+        reverse(temp.begin(), temp.end());
+        s+='$';
+        s+=temp;
+        int m = s.size(); //Size after concatenation
+        vector<int> lps(m, 0);
+        findlps(lps, s);
+        
+        int charFromLast = n-lps[m-1];
+        
+        //s.substr(n - charFromLast, charFromLast) takes the last charFromLast characters from s.   
+        string temp2 = originalStr.substr(n - charFromLast, charFromLast); 
+        reverse(temp2.begin(), temp2.end());
+
+        return temp2+originalStr; 
+    }
+};
