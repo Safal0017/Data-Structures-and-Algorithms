@@ -1,0 +1,85 @@
+Problem: Min Chars to Add for Palindrome
+Link: https://www.geeksforgeeks.org/problems/minimum-characters-to-be-added-at-front-to-make-string-palindrome/1
+
+Problem Statement: Given a string s, the task is to find the minimum characters to be added at the front to make the string palindrome.
+
+Note: A palindrome string is a sequence of characters that reads the same forward and backward.
+
+Examples:
+
+Input: s = "abc"
+Output: 2
+Explanation: Add 'b' and 'c' at front of the above string to make it palindrome: "cbabc"
+Input: s = "aacecaaaa"
+Output: 2
+Explanation: Add 2 a's at front of the above string to make it palindrome: "aaaacecaaaa"
+Constraints:
+1 ≤ s.size() ≤ 106
+s consists of lowercase english alphabets
+
+CODE: (2 Approaches)
+
+class Solution {
+  public:
+  
+    // bool checkPalindrome(int start, int end, string &s) {
+    //     while(start < end) {
+    //         if(s[start] != s[end])
+    //         return 0;
+    //         else {
+    //             start++, end--;
+    //         }
+    //     }
+    //     return 1;
+    // }
+    
+    void findlps(vector<int> &lps, string &s) {
+        
+        int pre = 0, suff = 1;
+        while(suff < s.size()) {
+            if(s[pre]==s[suff]) {
+                lps[suff] = pre+1;
+                pre++, suff++;
+            } else {
+                if(pre == 0){
+                    lps[suff] = 0;
+                    suff++;
+                } else {
+                    pre = lps[pre-1];
+                }
+            }
+        }
+        
+    }
+  
+    int minChar(string &s) {
+        // code here
+        //Brute-force Approach T.C: 0(n^2)
+        // string temp = "";
+        // int start = 0, end = s.size()-1;
+        // int n = s.size();
+        // while(start<end) {
+        //     if(checkPalindrome(start, end, s)) {
+        //         break;
+        //     } else {
+        //         temp+=s[end];
+        //         end--;
+        //     }
+        // }
+        
+        // return temp.size();
+        
+        //Optimized Approach, T.C: 0(n)
+        
+        int n = s.size(); //Original Size
+        string temp = s;
+        reverse(temp.begin(), temp.end());
+        s+='$';
+        s+=temp;
+        int m = s.size(); //Size after concatenation
+        vector<int> lps(m, 0);
+        findlps(lps, s);
+        
+        return n-lps[m-1];
+    }
+};
