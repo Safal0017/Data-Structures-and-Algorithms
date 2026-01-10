@@ -1,0 +1,32 @@
+Problem: Longest Prefix Suffix
+LINK: https://www.geeksforgeeks.org/problems/longest-prefix-suffix2527/1
+
+Code: 
+class Solution {
+  public:
+    int getLPSLength(string &s) {
+        // code here
+        int pre = 0, suff = 1;
+        vector<int> lps(s.size(),0);
+        while(suff < s.size()) {
+            
+            //Matched
+            if(s[pre] == s[suff])
+            {
+                lps[suff] = pre+1;
+                suff++, pre++;
+            }
+            //Not Matched
+            else {
+                if(pre == 0){
+                    lps[suff] = 0;
+                    suff++;
+                } else {
+                    pre = lps[pre-1];
+                }
+            }
+        }
+        
+        return lps[s.size()-1];
+    }
+};
