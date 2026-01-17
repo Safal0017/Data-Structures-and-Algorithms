@@ -1,0 +1,112 @@
+Heap Sort – (Using Max Heap)
+
+Time Complexity:
+
+Building Max Heap: O(n)
+
+Sorting (n−1 extractions): O(n log n)
+
+Overall: O(n log n)
+
+Space Complexity:
+
+O(1) using the iterative Heapify (in-place sorting, no extra array needed).
+
+O(log n) if recursive Heapify is used (recursive call stack).
+
+Concept:
+Heap Sort first converts the array into a Max Heap, where the largest element is placed at the root. 
+Then, it repeatedly swaps the root (max element) with the last element in the heap and reduces the heap size by one. 
+After each swap, Heapify is called to restore the heap property. This process continues until the array becomes fully sorted in ascending order.
+
+CODE:
+
+#include <iostream>
+using namespace std;
+
+// Using Recursion, S.C: 0(logn)
+// void Heapify(int arr[], int index, int n) {
+    
+//     int largest = index;
+//     int left = 2*index+1;
+//     int right = 2*index+2;
+    
+//     if(left<n && arr[left] > arr[largest])
+//     largest = left;
+    
+//     if(right<n && arr[right] > arr[largest])
+//     largest = right;
+    
+//     if(largest != index) {
+//         swap(arr[largest], arr[index]);
+//         Heapify(arr, largest, n);
+//     }
+    
+// }
+
+// Using Iterative Approach, S.C: 0(1)
+void Heapify(int arr[], int index, int n) {
+    
+    while(true) {
+        int largest = index;
+        int left = 2*index+1;
+        int right = 2*index+2;
+        
+        if(left<n && arr[left] > arr[largest])
+        largest = left;
+        
+        if(right<n && arr[right] > arr[largest])
+        largest = right;
+        
+        if(largest == index)
+        break;
+        
+        if(largest != index) {
+            swap(arr[largest], arr[index]);
+            index = largest;
+        }
+    
+    }
+    
+}
+
+void BuildMaxHeap(int arr[], int n) {
+    
+    for(int i=n/2-1;i>=0;i--) {
+        Heapify(arr, i, n);
+    }
+    
+}
+
+void print(int arr[], int n) {
+    for(int i=0;i<n;i++) 
+    cout<<arr[i]<<" ";
+    
+    cout<<endl;
+}
+
+void HeapSortTheArray(int arr[], int n) {
+    
+    for(int i=n-1;i>0;i--) {
+        swap(arr[0], arr[i]);
+        Heapify(arr, 0, i);
+    }
+    
+}
+
+
+int main()
+{
+    int arr[] = {10,3,8,9,5,13,18,14,11,70};
+    int n = 10;
+    BuildMaxHeap(arr, n);
+    print(arr, n);
+    HeapSortTheArray(arr, n);
+    print(arr, n);
+
+    return 0;
+}
+
+// Output:
+// 70 14 18 11 5 13 8 9 10 3
+// 3 5 8 9 10 11 13 14 18 70
