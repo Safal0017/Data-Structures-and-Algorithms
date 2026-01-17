@@ -1,0 +1,68 @@
+Problem: Minimum Cost of ropes
+Link: https://www.geeksforgeeks.org/problems/minimum-cost-of-ropes-1587115620/1
+
+Problem Statement:
+
+Given an array, arr[] of rope lengths, connect all ropes into a single rope with the minimum total cost. The cost to connect two ropes is the sum of their lengths. 
+
+Examples:
+
+Input: arr[] = [4, 3, 2, 6]
+Output: 29
+Explanation: First connect 2 and 3 to get [4, 5, 6] with a cost of 5, then connect 4 and 5 to get [9, 6] with a cost of 9, 
+and finally connect 9 and 6 to get one rope with a cost of 15, giving a total minimum cost of 29. Any other order, 
+such as connecting 4 and 6 first, results in a higher total cost of 38.
+Input: arr[] = [4, 2, 7, 6, 9]
+Output: 62 
+Explanation: First, connect ropes 4 and 2, which makes the array [6, 7, 6, 9]. 
+Cost of this operation 4 + 2 = 6. Next, add ropes 6 and 6, which results in [12, 7, 9]. Cost of this operation 6 + 6 = 12. 
+Then, add 7 and 9, which makes the array [12,16]. Cost of this operation 7 + 9 = 16. And finally, add these two which gives [28]. 
+Hence, the total cost is 6 + 12 + 16 + 28 = 62.
+Input: arr[] = [10]
+Output: 0
+Explanation: Since there is only one rope, no connections are needed, so the cost is 0.
+Constraints:
+1 ≤ arr.size() ≤ 105
+1 ≤ arr[i] ≤ 104
+
+CODE:
+
+class Solution {
+  public:
+    int minCost(vector<int>& arr) {
+        // code here
+        // Approach 1: Brute Force - O(n²)
+        // 1. Sort array: O(n log n)
+        // 2. For n-1 iterations:
+        //    - Take 2 smallest ropes: arr[0] + arr[1]
+        //    - Insert result back into sorted array: O(n) search + O(n) shift
+        // 3. Total: O(n log n) + (n-1) × O(n) = O(n²)
+        
+        // Approach 2: Min-Heap (Optimal) - O(n log n)
+        // 1. Build min-heap: O(n) for heapify OR O(n log n) for STL push
+        // 2. For n-1 iterations:
+        //    - Extract 2 minimums: 2 × O(log n)
+        //    - Insert sum back: O(log n)
+        //    - Total per iteration: 3 × O(log n)
+        // 3. Total: O(n) + (n-1) × O(3 log n) = O(n log n)
+        
+        priority_queue<int, vector<int>, greater<int>> minHeap;
+        
+        for(int i=0;i<arr.size();i++) 
+        minHeap.push(arr[i]);
+        
+        int cost = 0;
+        
+        while(minHeap.size()>1) {
+            int ropeCost = minHeap.top();
+            minHeap.pop();
+            ropeCost+=minHeap.top();
+            minHeap.pop();
+            cost+=ropeCost;
+            minHeap.push(ropeCost);
+        }
+        
+        return cost;
+        
+    }
+};
