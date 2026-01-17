@@ -54,6 +54,19 @@ public:
         // 3. Final heap.top() = kth largest
         // ✅ BEST when k << n (log k << log n)
 
+        // Approach 4:
+        // Using Quick Select
+        //  Quickselect is closely related to Quicksort, but it’s optimized for
+        //  finding the k-th largest (or smallest) element without fully sorting
+        //  the array.
+        
+        //  Quicksort: Recursively partitions the array into two halves and
+        //  sorts both sides. Quickselect: Uses the same partitioning step as
+        //  Quicksort but only recurses into the side that contains the k-th
+        //  element. This makes it faster on average — O(n) average time vs. O(n
+        //  log n) for full sorting.
+
+
         // Key Insight:
         // kth largest → MinHeap(size k): eliminates smallest k+1 candidates
         // kth smallest → MaxHeap(size k): eliminates largest k+1 candidates
