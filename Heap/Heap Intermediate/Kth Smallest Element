@@ -1,0 +1,81 @@
+Problem: Kth Smallest Element
+Link: https://www.geeksforgeeks.org/problems/kth-smallest-element5635/1
+
+Problem Statement:
+
+Given an integer array arr[] and an integer k, your task is to find and return the kth smallest element in the given array.
+
+Note: The kth smallest element is determined based on the sorted order of the array.
+
+Examples :
+
+Input: arr[] = [10, 5, 4, 3, 48, 6, 2, 33, 53, 10], k = 4
+Output: 5
+Explanation: 4th smallest element in the given array is 5.
+Input: arr[] = [7, 10, 4, 3, 20, 15], k = 3
+Output: 7
+Explanation: 3rd smallest element in the given array is 7.
+Constraints:
+1 ≤ arr.size() ≤ 105
+1 ≤ arr[i] ≤ 105
+1 ≤ k ≤  arr.size() 
+
+CODE:
+
+class Solution {
+  public:
+    int kthSmallest(vector<int> &arr, int k) {
+        // code here
+        
+        // Kth Smallest Element - 3 Approaches Analysis
+        // ===============================================
+        
+        // Approach 1: Sort Array - O(n log n), O(1) space
+        // 1. Sort entire array: O(n log n)
+        // 2. Return arr[k-1]: O(1)
+        // ✅ Simple but always processes ALL elements
+        
+        // Approach 2: MinHeap (Extract k times) - O(n + k log n), O(1) space
+        // 1. Build min-heap from array: O(n)
+        // 2. Extract minimum k times: O(k log n)
+        // ✅ Good when k ≈ n/2, worst case O(n log n)
+        
+        // Approach 3: MaxHeap (Size k) - O(n log k), O(k) space ★ OPTIMAL
+        // 1. Build max-heap with first k elements: 
+        //    - Step-down (heapify): O(k) 
+        //    - priority_queue.push(): O(k log k)  ← WE'LL USE THIS
+        // 2. For remaining (n-k) elements:
+        //    - If arr[i] < heap.top(): pop top, push arr[i]
+        //    - Each operation, insertion & deletion: O(2log k)
+        // 3. Final heap.top() = kth smallest
+        // ✅ BEST when k << n (log k << log n)
+        
+        // Key Insight: 
+        // kth smallest → MaxHeap(size k): eliminates largest k+1 candidates
+        // kth largest → MinHeap(size k): eliminates smallest k+1 candidates
+        
+        // Complexity Comparison (k=4, n=1000):
+        // Approach 1: O(1000 log 1000) = ~10K operations
+        // Approach 2: O(1000 + 4 log 1000) = 1,012 operations ~ 1K operations  
+        // Approach 3: O(1000 log 4) = 602 operations << 1K ★ WINNER
+        
+        // Implementation: Using priority_queue (less code, same result)
+        // We'll use Approach 3 for optimal performance
+
+        
+        priority_queue<int> p;
+        
+        for(int i=0;i<k;i++)
+        p.push(arr[i]);
+        
+        for(int i=k;i<arr.size();i++) {
+            if(arr[i]<p.top()) {
+                p.pop();
+                p.push(arr[i]);
+            }
+        }
+        
+        return p.top();
+        
+    }
+};
