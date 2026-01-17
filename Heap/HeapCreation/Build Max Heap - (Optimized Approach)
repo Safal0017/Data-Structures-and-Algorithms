@@ -1,0 +1,92 @@
+Build Max Heap – Optimized Approach
+
+Time Complexity: O(n) for building a heap with n nodes (compared to the step-up approach’s O(n log n)).
+
+Space Complexity: O(log n) using recursion, O(1) using the iterative approach.
+
+Concept: Instead of inserting elements one by one (step-up method), this approach uses a 
+step-down method—heapifying from the last non-leaf node to the root—to place each element in its correct position efficiently.
+
+Constraint: This method applies when the input array (of fixed size) is already available and you need to build a Max Heap in O(n) time.
+
+CODE:
+
+#include <iostream>
+using namespace std;
+
+// Using Recursion, S.C: 0(logn)
+// void Heapify(int arr[], int index, int n) {
+    
+//     int largest = index;
+//     int left = 2*index+1;
+//     int right = 2*index+2;
+    
+//     if(left<n && arr[left] > arr[largest])
+//     largest = left;
+    
+//     if(right<n && arr[right] > arr[largest])
+//     largest = right;
+    
+//     if(largest != index) {
+//         swap(arr[largest], arr[index]);
+//         Heapify(arr, largest, n);
+//     }
+    
+// }
+
+// Using Iterative Approach, S.C: 0(1)
+void Heapify(int arr[], int index, int n) {
+    
+    while(true) {
+        int largest = index;
+        int left = 2*index+1;
+        int right = 2*index+2;
+        
+        if(left<n && arr[left] > arr[largest])
+        largest = left;
+        
+        if(right<n && arr[right] > arr[largest])
+        largest = right;
+        
+        if(largest == index)
+        break;
+        
+        if(largest != index) {
+            swap(arr[largest], arr[index]);
+            index = largest;
+        }
+    
+    }
+    
+}
+
+void BuildMaxHeap(int arr[], int n) {
+    
+    for(int i=n/2-1;i>=0;i--) {
+        Heapify(arr, i, n);
+    }
+    
+}
+
+void print(int arr[], int n) {
+    for(int i=0;i<n;i++) 
+    cout<<arr[i]<<" ";
+    
+    cout<<endl;
+}
+
+
+int main()
+{
+    int arr[] = {10,3,8,9,5,13,18,14,11,70};
+    int n = 10;
+    BuildMaxHeap(arr, n);
+    print(arr, n);
+
+    return 0;
+}
+
+// Output:
+// 70 14 18 11 5 13 8 9 10 3
+
+
