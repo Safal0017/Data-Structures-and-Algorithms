@@ -39,7 +39,8 @@ class Solution {
         // code here
         if(n == 1)
         return 1;
-        
+
+        // Approach 1:
         int height = 0;
         
         while(n>1) {
@@ -48,6 +49,9 @@ class Solution {
         }
         
         return height;
+
+        // Approach 2:
+        // return floor(log2(n));
     }
 };
 
