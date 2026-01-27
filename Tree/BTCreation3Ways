@@ -1,0 +1,220 @@
+3 Ways to Create Binary Tree:
+i. Using iterative Queue Approach
+ii. Using recursive Stack Approach
+iii. Using iterative Stack Approach
+
+#include <iostream>
+#include <stack>
+#include <queue>  
+using namespace std;
+
+class Node {
+public:
+    int data;
+    Node* left;
+    Node* right;
+    
+    Node(int val) {
+        data = val;
+        left = NULL;
+        right = NULL;
+    }
+};
+
+// BFS print function (using QUEUE)
+void PrintBFSBinaryTree(Node* root) {
+    if (!root) return;
+    queue<Node*> q;
+    q.push(root);
+    while(!q.empty()) {
+        Node* node = q.front();
+        q.pop();
+        if(node->left) q.push(node->left);
+        if(node->right) q.push(node->right);
+        cout << node->data << " ";
+    }
+    cout << endl;
+}
+
+// RECURSIVE STACK-BASED TREE CREATION
+Node* NodeCreation(int val) {
+    if(val==-1)
+    return NULL;
+    
+    Node* newNode = new Node(val);
+    int x,y;
+    cout<<"Enter "<<newNode->data<<"'s left child: ";
+    cin>>x;
+    if(x!=-1) {
+        newNode->left = NodeCreation(x);
+    }
+    cout<<"Enter "<<newNode->data<<"'s right child: ";
+    cin>>y;
+    if(y!=-1) {
+        newNode->right = NodeCreation(y);
+    }
+    return newNode;
+}
+
+// ITERATIVE STACK-BASED TREE CREATION
+Node* createTreeIterativeStack() {
+    stack<Node*> stk;
+    int rootVal;
+    
+    cout << "Enter the root element (-1 to exit): ";
+    cin >> rootVal;
+    
+    if (rootVal == -1) return NULL;
+    
+    // Create root and push to stack
+    Node* root = new Node(rootVal);
+    stk.push(root);
+    
+    while (!stk.empty()) {
+        // Get current parent node
+        Node* parent = stk.top();
+        stk.pop();
+        
+        int leftVal, rightVal;
+        
+        // Input left child
+        cout << "Enter " << parent->data << "'s left child (-1 for no child): ";
+        cin >> leftVal;
+        
+        if (leftVal != -1) {
+            parent->left = new Node(leftVal);
+            stk.push(parent->left);  // Push left child FIRST (like BFS)
+        }
+        
+        // Input right child  
+        cout << "Enter " << parent->data << "'s right child (-1 for no child): ";
+        cin >> rightVal;
+        
+        if (rightVal != -1) {
+            parent->right = new Node(rightVal);
+            stk.push(parent->right);  // Push right child AFTER left
+        }
+    }
+    
+    return root;
+}
+
+int main() {
+    
+    // cout << "=== QUEUE-BASED ITERATIVE TREE CREATION ===" << endl;
+    // int x;
+    // cout<<"Enter the root element: "<<endl;
+    // cin>>x;
+    
+    // Node* root = new Node(x);
+
+    // queue<Node*> q;
+    // q.push(root);
+    
+    // while(!q.empty()) {
+    //     Node* node = q.front();
+    //     q.pop();
+    //     int a,b;
+    //     cout<<"Enter "<<node->data<<"'s left child: ";
+    //     cin>>a;
+    //     if(a!=-1) {
+    //         node->left = new Node(a);
+    //         q.push(node->left);
+    //     }
+        
+    //     cout<<"Enter "<<node->data<<"'s right child: ";
+    //     cin>>b;
+    //     if(b!=-1) {
+    //         node->right = new Node(b);
+    //         q.push(node->right);
+    //     }
+        
+    // }
+    
+    // cout << "=== STACK-BASED RECURSIVE TREE CREATION ===" << endl;
+    // int x;
+    // cout<<"Enter the root element: "<<endl;
+    // cin>>x;
+    
+    // Node* root = NodeCreation(x);
+    
+    cout << "=== STACK-BASED ITERATIVE TREE CREATION ===" << endl;
+    Node* root = createTreeIterativeStack();
+    
+    if (root) {
+        cout << "\nBFS Traversal: ";
+        PrintBFSBinaryTree(root);
+    } else {
+        cout << "Empty tree!" << endl;
+    }
+    
+    // TODO: Add memory cleanup
+    return 0;
+}
+
+// === QUEUE-BASED ITERATIVE TREE CREATION ===
+// Enter the root element: 
+// 1
+// Enter 1's left child: 2
+// Enter 1's right child: 3
+// Enter 2's left child: 4
+// Enter 2's right child: 5
+// Enter 3's left child: -1
+// Enter 3's right child: 6
+// Enter 4's left child: -1
+// Enter 4's right child: -1
+// Enter 5's left child: 10
+// Enter 5's right child: 13
+// Enter 6's left child: -1
+// Enter 6's right child: -1
+// Enter 10's left child: -1
+// Enter 10's right child: -1
+// Enter 13's left child: -1
+// Enter 13's right child: -1
+
+// BFS Traversal: 1 2 3 4 5 6 10 13
+
+
+// === STACK-BASED RECURSIVE TREE CREATION ===
+// Enter the root element: 
+// 1
+// Enter 1's left child: 2
+// Enter 2's left child: 4
+// Enter 4's left child: -1
+// Enter 4's right child: -1
+// Enter 2's right child: 5
+// Enter 5's left child: 10
+// Enter 10's left child: -1
+// Enter 10's right child: -1
+// Enter 5's right child: 13
+// Enter 13's left child: -1
+// Enter 13's right child: -1
+// Enter 1's right child: 3
+// Enter 3's left child: -1
+// Enter 3's right child: 6
+// Enter 6's left child: -1
+// Enter 6's right child: -1
+
+// BFS Traversal: 1 2 3 4 5 6 10 13
+
+
+// === STACK-BASED ITERATIVE TREE CREATION ===
+// Enter the root element (-1 to exit): 1
+// Enter 1's left child (-1 for no child): 2
+// Enter 1's right child (-1 for no child): 3
+// Enter 3's left child (-1 for no child): -1
+// Enter 3's right child (-1 for no child): 6
+// Enter 6's left child (-1 for no child): -1
+// Enter 6's right child (-1 for no child): -1
+// Enter 2's left child (-1 for no child): 4
+// Enter 2's right child (-1 for no child): 5
+// Enter 5's left child (-1 for no child): 10
+// Enter 5's right child (-1 for no child): 13
+// Enter 13's left child (-1 for no child): -1
+// Enter 13's right child (-1 for no child): -1
+// Enter 10's left child (-1 for no child): -1
+// Enter 10's right child (-1 for no child): -1
+// Enter 4's left child (-1 for no child): -1
+// Enter 4's right child (-1 for no child): -1
+
+// BFS Traversal: 1 2 3 4 5 6 10 13
