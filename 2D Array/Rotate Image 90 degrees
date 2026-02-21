@@ -1,0 +1,37 @@
+Rotate Image 90 degrees 
+Leetcode: https://leetcode.com/problems/rotate-image/description/
+GFG: https://www.geeksforgeeks.org/problems/rotate-by-90-degree0356/1
+
+class Solution {
+public:
+    void rotate(vector<vector<int>>& matrix) {
+        int row = matrix.size();
+        int col = matrix[0].size();
+
+        //1st Approach:
+        //use extra array, iterate over the original array, and
+        //ans[j][row-i-1] = matrix[i][j]
+
+        //2nd Approach:
+        //if in-place then
+        //tranpose the given matrix
+        //then reverse each row.
+
+        //tranpose
+        for(int i=0;i<row;i++) {
+            for(int j=i+1;j<col;j++){
+                swap(matrix[i][j], matrix[j][i]);
+            }
+        }
+
+        //reverse each row.
+        for(int i=0;i<row;i++) {
+            int start = 0;
+            int end = col-1;
+            while(start<end) {
+                swap(matrix[i][start], matrix[i][end]);
+                start++, end--;
+            }
+        }
+    }
+};
