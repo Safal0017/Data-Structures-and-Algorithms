@@ -1,0 +1,33 @@
+Tranponse Matrix (row != col)
+Link: https://leetcode.com/problems/transpose-matrix/
+
+CODE:
+
+class Solution {
+public:
+    vector<vector<int>> transpose(vector<vector<int>>& matrix) {
+        int row = matrix.size();
+        int col = matrix[0].size();
+
+        // n==m
+        // for(int i=0;i<row;i++){
+        //     for(int j=i+1;j<col;j++){
+        //         swap(matrix[i][j], matrix[j][i]);
+        //     }
+        // }
+        // return matrix;
+
+        //n!=m
+        vector<vector<int >> ans(col);
+
+        for(int j=0;j<col;j++) {
+
+            for(int i=0;i<row;i++) {
+                ans[j].push_back(matrix[i][j]);
+            }
+
+        }
+
+        return ans;
+    }
+};
