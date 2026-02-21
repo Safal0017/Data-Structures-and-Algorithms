@@ -1,0 +1,63 @@
+Optimized Search in a Sorted 2D Matrix (row-sorted and column-sorted)
+Leetcode: https://leetcode.com/problems/search-a-2d-matrix/description/
+
+CODE:
+
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        //1st Approach: Brute-force 0(row*col)
+        //Iterate over the 2D matrix and for each element, 
+        //check if it matches target or not.
+
+        //2nd Approach (n+logm or m+logn)
+        //for each row, check if the target element lies within the col range 
+        //and that way, find out row, and then for col apply BS.
+
+        // int row = matrix.size();
+        // int col = matrix[0].size();
+        // for(int i=0;i<row;i++) {
+        //     int start = 0;
+        //     int end = col-1;
+        //     if(matrix[i][start]<=target && target<=matrix[i][end]) {
+        //         while(start<=end) {
+        //             if(matrix[i][start]==target) {
+        //                 return 1;
+        //             } 
+        //             start++;
+        //         }
+        //     }
+        // }
+
+        // return 0;
+
+        //3rd Approach, 0(log(n*m))
+        //Considering the 2D matrix being stored in a linear contiguous manner inside memory
+        //and applying binary search over that 1D array, in turn utilizes the 
+        //row-sorted & column-sorted property of matrix.
+        //By default, C++/Java follows row-major order to store 2D array elements,
+        //Index Calculation formula for row-major:
+        //Index = row_index*col+col_index.
+        
+        int row = matrix.size();
+        int col = matrix[0].size();
+
+        int start = 0;
+        int end = row*col-1;
+        while(start<=end) {
+            int mid = start + (end-start)/2;
+            //finding row_index & column_index using formula.
+            int row_index = mid/col;
+            int col_index = mid%col;
+            if(matrix[row_index][col_index]==target)
+            return 1;
+            else if(matrix[row_index][col_index] < target)
+            start++;
+            else
+            end--;
+        }
+
+        return 0;
+
+    }
+};
