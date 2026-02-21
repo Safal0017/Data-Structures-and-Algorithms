@@ -1,0 +1,38 @@
+Rotate a Matrix by 180 Counterclockwise
+GFG: https://www.geeksforgeeks.org/problems/c-matrix-rotation-by-180-degree0745/1
+
+CODE:
+
+class Solution {
+  public:
+    void rotateMatrix(vector<vector<int>>& matrix) {
+        // Code here
+        
+        //1st Approach
+        //reverse all rows + reverse all columns
+        
+        //2nd Approach
+        //2 times 90 degree
+        
+        //3rd Approach
+        int row = matrix.size();
+        int col = matrix[0].size();
+        
+        for(int i=0;i<row/2;i++) {
+            for(int j=0;j<col;j++) {
+                swap(matrix[i][j], matrix[row-i-1][col-j-1]);
+            }
+        }
+        
+        int flag = row%2;
+        int rowNo = row/2;
+        //reverse this particular row no.
+        if(flag) {
+            int start = 0, end = col-1;
+            while(start<end) {
+                swap(matrix[rowNo][start], matrix[rowNo][end]);
+                start++, end--;
+            }
+        }
+    }
+};
