@@ -1,0 +1,128 @@
+Is Binary Tree Heap
+Link: https://www.geeksforgeeks.org/problems/is-binary-tree-heap/1
+
+Problem Description:
+You are given the root of a binary tree, and the task is to determine whether it satisfies the properties of a max-heap.
+
+A binary tree is considered a max-heap if it satisfies the following conditions:
+
+Completeness: Every level of the tree, except possibly the last, is completely filled, and all nodes are as far left as possible.
+Max-Heap Property: The value of each node is greater than or equal to the values of its children.
+
+Constraints:
+1 ≤ number of nodes ≤ 10^3
+1 ≤ node->data ≤ 10^3
+
+CODE:
+
+/*
+class Node {
+   public:
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+  
+    void preOrder(Node* root, int &totalNodes) {
+        if(!root)
+        return;
+        
+        totalNodes++;
+        preOrder(root->left, totalNodes);
+        preOrder(root->right, totalNodes);
+    }
+    
+    bool isBinaryTreeHeap(Node* root, int index, int &totalNodes) {
+        
+        if(!root)
+        return 1;
+        
+        //Doesn't hold CBT Property.
+        if(index>=totalNodes)
+        return 0;
+        
+        int left = 2*index+1;
+        int right = 2*index+2;
+        
+        //Approach: 1
+        
+        // if(root->left) {
+            
+        //     if(!isBinaryTreeHeap(root->left, left, totalNodes))
+        //     return 0;
+            
+        //     if(root->data < root->left->data)
+        //     return 0;
+            
+        // }
+        
+        // if(root->right) {
+            
+        //     if(!isBinaryTreeHeap(root->right, right, totalNodes))
+        //     return 0;
+            
+        //     return root->data >= root->right->data;
+            
+        // }
+
+        // if(!root->left && !root->right)
+        // return 1;
+        
+        //For the case:
+        // 10, 8, 7, 3, 4, 2, N
+        //when root is 7, left returns 1, but no right child exists and it is not leaf, so 
+        //what it needs to return?
+        // return 1;
+        
+        //2nd Approach:
+        
+        if(root->left) {
+            if(!isBinaryTreeHeap(root->left, left, totalNodes))
+            return 0;
+        }
+        
+        if(root->right) {
+            if(!isBinaryTreeHeap(root->right, right, totalNodes))
+            return 0;
+        }
+        
+        if(root->left && root->data < root->left->data)
+        return 0;
+        
+        if(root->right && root->data < root->right->data)
+        return 0;
+        
+        return 1;
+        
+    }
+  
+    bool isHeap(Node* root) {
+        // code here
+        
+        //1. Verify if CBT.
+        //2. root->data >= it's child nodes.
+        
+        //Steps:
+        //i. Calculate totalNodes.
+        //ii. At Each Node:
+        //      a. for CBT if index>=totalNodes return 0, (Not hold CBT Property).
+        //      b. Recursive call to root->left & perform validation
+        //      c. Recurisve call to root->right & perform validation.
+        
+        int totalNodes = 0;
+        preOrder(root, totalNodes);
+        // cout<<totalNodes<<endl;
+        
+        return isBinaryTreeHeap(root, 0, totalNodes);
+        
+    }
+};
