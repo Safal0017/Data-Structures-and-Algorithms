@@ -1,0 +1,68 @@
+BST to max heap
+Link: https://www.geeksforgeeks.org/problems/bst-to-max-heap/1
+
+Problem Description:
+Given a Binary Search Tree. Convert a given BST into a Special Max Heap with the condition that 
+all the values in the left subtree of a node should be less than all the values in the right subtree of the node. 
+This condition is applied on all the nodes in the so converted Max Heap.
+
+Your task :
+You don't need to read input or print anything. Your task is to complete the function convertToMaxHeapUtil() which takes the root of the tree as input and converts the BST to max heap.
+Note : The driver code prints the postorder traversal of the converted BST.
+ 
+Expected Time Complexity : O(n)
+Expected Auxiliary Space : O(n)
+ 
+Constraints :
+1 ≤ n ≤ 10^5
+
+CODE:
+
+// User function Template for C++
+
+/*struct Node {
+    int data;
+    Node *left, *right;
+};*/
+
+class Solution {
+  public:
+  
+    void inOrder(Node* root, vector<int> &ans) {
+        if(!root)
+        return;
+        
+        inOrder(root->left, ans);
+        ans.push_back(root->data);
+        inOrder(root->right, ans);
+    }
+    
+    void postOrderToReplace(Node* root, vector<int> &ans, int &index) {
+        if(!root)
+        return;
+        
+        postOrderToReplace(root->left, ans, index);
+        
+        postOrderToReplace(root->right, ans, index);
+        
+        root->data = ans[index];
+        index++;
+    }
+  
+    void convertToMaxHeapUtil(Node* root) {
+        // Your code goes here
+        
+        //1. Every parent > child nodes.
+        //2. left subtree < right subtree
+        //PTR: No Mentioning of CBT(Complete Binary Tree) Property.
+        
+        vector<int> ans;
+        
+        //Inorder traversal to get sorted elements within ans vector
+        inOrder(root, ans);
+        
+        //Postorder traversal to replace the values of the nodes.
+        int index = 0;
+        postOrderToReplace(root, ans, index);
+    }
+};
