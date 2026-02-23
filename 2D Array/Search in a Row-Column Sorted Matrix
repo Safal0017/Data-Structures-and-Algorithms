@@ -10,7 +10,7 @@ class Solution {
         // your code here
         //1st Approach: Brute-force Approach 0(n*m)
         
-        //2nd Approach:
+        //2nd Approach: T.C: 0(n+m)
         // use the staircase search approach: (either top-right or bottom-left)
         //we can make a decision standing at any particular element
 
