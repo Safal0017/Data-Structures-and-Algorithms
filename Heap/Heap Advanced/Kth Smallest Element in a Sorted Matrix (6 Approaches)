@@ -1,0 +1,187 @@
+Problem: Kth Smallest Element in a Sorted Matrix (6 Approaches)
+Link: https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/description/
+
+Description: 
+Given an n x n matrix where each of the rows and columns is sorted in ascending order, return the kth smallest element in the matrix.
+
+Note that it is the kth smallest element in the sorted order, not the kth distinct element.
+
+You must find a solution with a memory complexity better than O(n2).
+
+ 
+
+Example 1:
+
+Input: matrix = [[1,5,9],[10,11,13],[12,13,15]], k = 8
+Output: 13
+Explanation: The elements in the matrix are [1,5,9,10,11,12,13,13,15], and the 8th smallest number is 13
+Example 2:
+
+Input: matrix = [[-5]], k = 1
+Output: -5
+ 
+
+Constraints:
+
+n == matrix.length == matrix[i].length
+1 <= n <= 300
+-109 <= matrix[i][j] <= 109
+All the rows and columns of matrix are guaranteed to be sorted in non-decreasing order.
+1 <= k <= n2
+ 
+
+Follow up:
+
+Could you solve the problem with a constant memory (i.e., O(1) memory complexity)?
+Could you solve the problem in O(n) time complexity? 
+
+
+CODE:
+
+class Solution {
+public:
+
+    int countLessEqual(vector<vector<int>>& matrix, int mid) {
+    int row = matrix.size();
+    int col = matrix[0].size();
+    int count = 0;
+    int top = 0, right = col - 1;  // Start top-right corner
+    
+        while(top < row && right >= 0) {
+            if(matrix[top][right] <= mid) {
+                count += (right + 1);  // All elements left of col in this row <= mid
+                top++;               // Move down (sorted rows)
+            } else {
+                right--;               // Move left (too large)
+            }
+        }
+        return count;
+    }
+
+
+    int kthSmallest(vector<vector<int>>& matrix, int k) {
+
+// 1.   Brute-Force (Flatten and Sort):
+//      Approach: Flatten the n×n matrix, sort the full list, and pick the k^th element.
+//      Time Complexity: O(n^2 log⁡n^2)=O(n^2 log⁡n)
+//      Space Complexity: O(n^2)
+//      Simple but inefficient for large matrices.
+
+// 2.	Full Min-Heap Approach:
+//      Approach: Push all n^2 elements into a min-heap, then pop k times.
+//      Time Complexity: Building heap O(n^2), plus O(klog⁡n^2)=O(klog⁡n).
+//      → Combined: O(n^2+klog⁡n)
+//      Space Complexity: O(n^2)
+//      Straightforward but memory-heavy.
+
+// 3.	Optimized Heap (Row/Column-wise Min-Heap):
+// 	    Approach: Initialize heap with either first row or first column since the 
+//      matrix is sorted row-wise and column-wise. Each time, pop the smallest, 
+//      then push its next neighbor (right or bottom).
+// 	    Time Complexity: Initialization O(n) + O(klog⁡n) (for k pop/push operations).
+//      → Total: O(n+klog⁡n)
+// 	    Space Complexity: O(n)
+//      Much more efficient, commonly used practical heap-based method.
+
+// 4.	Binary Search on Matrix Value Range:
+// 	    Approach: Apply binary search over the value range between the smallest 
+//      and largest elements. 
+//      For each mid-value, 
+//      count how many elements in the matrix are ≤ mid 
+//      (using linear scan from bottom-left or top-right).
+
+// 	    Time Complexity: Each count = O(n+m), where n="rows" , m="cols" .
+//      Binary search runs over the value range, typically O(log⁡("max"-"min")), 
+//      which for simplicity often gets noted as O(log⁡n) in practice.
+//      → Total: O((n+m)log⁡("range"))≈O(nlog⁡n)
+// 	    Space Complexity: O(1)
+//      Efficient when matrix values are bounded and ordered.
+
+// 5.   BFS + min-heap from (0,0)
+//      If we always push the right and bottom neighbors of every popped cell, 
+//      we will potentially revisit the same cell multiple times unless 
+//      we maintain a visited set or in-place marking. 
+    
+//      With a proper visited check:
+// 	    Each cell is pushed into the heap at most once.
+// 	    Each cell is popped at most once.
+//      So:
+// 	    At most k extractions before we reach the k^th smallest.
+// 	    Heap size is at most k (in practice it grows with the frontier 
+//      but bounded by visited cells, and for this style of reasoning we usually bound by k).
+
+//      In-Short:
+//      We treat the matrix as an implicit graph and start from matrix, 
+//      always expanding the smallest element first using a min-heap.
+//      On each extraction, we push its right and bottom neighbors 
+//      (if in bounds and not yet visited), and after k heap pops, 
+//      the last extracted value is the kth smallest.
+//      Time complexity: O(k log k), 
+//      Space complexity: O(k), assuming we never insert more than k frontier nodes 
+//      into the heap.
+
+// 6.   BFS + max-heap of size k
+//      Here we are doing a full BFS traversal over the matrix but maintaining only 
+//      the best k candidates in a max-heap:
+// 	    BFS traversal over all cells: we visit n^2 elements once.
+	
+//      For each visited element:
+// 	    If heap size < k → push: O(log⁡k).
+// 	    Else compare with heap.top(), and possibly pop + push: still O(log⁡k).
+//      So, for n^2 elements, each costs at most one O(log⁡k) heap operation:
+// 	    Time: O(n^2 log⁡k).
+// 	    Space: O(k) for the max-heap + O(n^2) if we track visited in a separate structure, 
+//      or O(1) extra if we mutate the matrix in-place for “visited” marking.
+
+        // Approach 4th: Code:
+        // int n = matrix.size();
+        // int start = matrix[0][0], end = matrix[n-1][n-1];
+        // int ans = 0;
+        
+        // while(start <= end) {
+        //     int mid = start + (end - start) / 2;
+        //     int count = countLessEqual(matrix, mid);  // Count elements <= mid
+            
+        //     if(count >= k) {
+        //         ans = mid;        // Candidate found, try smaller
+        //         end = mid - 1;
+        //     } else {
+        //         start = mid + 1;   // Need larger value
+        //     }
+        // }
+        // return ans;
+
+        // Approach 3: Optimized Heap (Row/Column-wise Min-Heap)
+
+        // pair<int, pair<int,int>>;
+
+        int row = matrix.size();
+        int col = matrix[0].size();
+
+        vector<pair<int, pair<int,int>>> temp;
+
+        //insert first col
+        for(int i=0;i<row;i++) {
+            temp.push_back(make_pair(matrix[i][0], make_pair(i, 0)));
+        }
+
+        priority_queue<pair<int, pair<int,int>>, vector<pair<int, pair<int,int>>>, greater<pair<int, pair<int,int>>>> p(temp.begin(), temp.end());
+
+        pair<int,pair<int, int>> Element;
+        int i, j, ans;
+
+        while(k--) {
+            Element = p.top();
+            p.pop();
+            ans = Element.first;
+            i = Element.second.first;
+            j = Element.second.second;
+
+            if(j+1<col) 
+            p.push(make_pair(matrix[i][j+1], make_pair(i, j+1)));
+        }
+
+        return ans;
+
+    }
+};
