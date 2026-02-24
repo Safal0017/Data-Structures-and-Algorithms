@@ -1,0 +1,103 @@
+Problem: Sort a linked list of 0s, 1s and 2s (Dutch National Flag Problem)
+Link: https://www.geeksforgeeks.org/problems/given-a-linked-list-of-0s-1s-and-2s-sort-it/1
+
+Optimized Approach: single pass, O(1) space
+
+Description:
+
+Given the head of a linked list where nodes can contain values 0s, 1s, and 2s only. 
+Your task is to rearrange the list so that all 0s appear at the beginning, followed by all 1s, and all 2s are placed at the end.
+
+Examples:
+
+Input: head = 1 → 2 → 2 → 1 → 2 → 0 → 2 → 2
+   
+Output: 0 → 1 → 1 → 2 → 2 → 2 → 2 → 2
+Explanation: All the 0s are segregated to the left end of the linked list, 2s to the right end of the list, and 1s in between. The final list will be:
+   
+Input: head = 2 → 2 → 0 → 1
+   
+Output: 0 → 1 → 2 → 2
+Explanation: After arranging all the 0s, 1s and 2s in the given format, the output will be:
+   
+Constraints:
+1 ≤ no. of nodes ≤ 106
+0 ≤ node->data ≤ 2
+
+CODE:
+
+/* Node is defined as
+  class Node {
+  public:
+    int data;
+    Node* next;
+
+    Node(int x) {
+        data = x;
+        next = nullptr;
+    }
+};
+*/
+class Solution {
+  public:
+    Node* segregate(Node* head) {
+        // code here
+        //1st Approach:
+        // Count the frequency of 0,1,2's while iterating the list
+        // Perform second iteration to change the values of nodes
+        
+        // 2nd Approach: 
+        // Other Approaches include, storing it in an array
+        // i. Sort the Arr.
+        // ii. Similarly count the frequency & accordingly address.
+        
+        // 3rd. In-Place: single pass, O(1) space
+        if(!head) return NULL;
+
+        Node* zeroHead = new Node(0); Node* zeroTail = zeroHead;
+        Node* oneHead = new Node(0); Node* oneTail = oneHead;
+        Node* twoHead = new Node(0); Node* twoTail = twoHead;
+        
+        Node* curr = head;
+        while(curr) {
+            Node* temp = curr;
+            curr = curr->next;
+            temp->next = NULL;  // Fix: Detach properly
+            
+            if(temp->data == 0) {
+                zeroTail->next = temp;
+                zeroTail = temp;
+            } else if(temp->data == 1) {
+                oneTail->next = temp;
+                oneTail = temp;
+            } else {
+                twoTail->next = temp;
+                twoTail = temp;
+            }
+        }
+        
+        // Chain: tails already at ends
+        
+        // if we have noOf1's > 0 then zeroTail->next = oneHead->next 
+        // else it will connect to twoHead->next (skipping 0th dummy node of twoHead)
+        zeroTail->next = (oneTail == oneHead ? twoHead->next : oneHead->next);
+        
+        //Similarly if noOf1's > 0 then one_end will store oneTail else zeroTail.
+        Node* one_end = (oneTail == oneHead ? zeroTail : oneTail);  // If no 1s, end of 1s is end of 0s
+        //Connecting zeroTail or oneTail to twoHead. 
+        //Although the below step will always connect oneTail to twoHead because if noOf1's == 0
+        //The connection would've already been established in the 1st step.
+        one_end->next = twoHead->next;
+        
+        // Return real head, set final tail NULL
+        
+        //Iterate over the twoHead and set it's last node to point NULL;
+        Node* twoTail_final = twoHead;
+        while(twoTail_final->next) twoTail_final = twoTail_final->next;
+        twoTail_final->next = NULL;
+        
+        //skipping zeroHead first dummy node.
+        return zeroHead->next;
+
+    }
+};
