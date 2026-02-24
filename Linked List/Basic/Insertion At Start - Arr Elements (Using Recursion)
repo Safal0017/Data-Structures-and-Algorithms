@@ -1,0 +1,54 @@
+Problem: Insertion At Start - Arr Elements (Using Recursion)
+
+CODE:
+
+#include <iostream>
+using namespace std;
+
+class Node {
+        public: 
+        int data;
+        Node* next;
+        
+        Node(int value) {
+            data = value;
+            next = NULL;
+        }
+};
+  
+Node* CreateLinkedList(int arr[], int index, int size, Node* prev) {
+    if(index==size)
+    return prev;
+    
+    Node* temp = new Node(arr[index]);
+    temp->next = prev;
+    return CreateLinkedList(arr, index+1, size, temp);
+}
+
+void printLinkedList(Node* head) {
+    if(!head)
+    return;
+    
+    Node* temp = head;
+    while(temp){
+        cout<<temp->data<<" ";
+        temp = temp->next;
+    }
+}
+
+int main()
+{
+        Node* Head;
+        Head = NULL;
+        
+        int arr[] = {2,4,6,8,10};
+        int n = 5;
+        Head = CreateLinkedList(arr, 0, n, Head);
+        
+        printLinkedList(Head);
+
+    return 0;
+}
+
+OUTPUT:
+10 8 6 4 2
