@@ -1,0 +1,84 @@
+Problem: Remove Duplicates from Sorted List (2 Approaches)
+Link: https://leetcode.com/problems/remove-duplicates-from-sorted-list/
+
+Problem Description:
+Given the head of a sorted linked list, delete all duplicates such that each element appears only once. Return the linked list sorted as well.
+
+ 
+
+Example 1:
+
+
+Input: head = [1,1,2]
+Output: [1,2]
+Example 2:
+
+
+Input: head = [1,1,2,3,3]
+Output: [1,2,3]
+ 
+
+Constraints:
+
+The number of nodes in the list is in the range [0, 300].
+-100 <= Node.val <= 100
+The list is guaranteed to be sorted in ascending order.
+
+CODE:
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if(!head)
+        return NULL;
+
+        // Approach 1: Using extra space
+        // vector<int> ans;
+        // ans.push_back(head->val);
+        // ListNode* curr = head->next;
+        // while(curr) {
+        //     if(ans[ans.size()-1]!=curr->val) {
+        //         ans.push_back(curr->val);
+        //     }
+        //     curr = curr->next;
+        // }
+
+        // ListNode* prev = NULL;
+        // curr = head;
+        // for(int i=0;i<ans.size();i++) {
+        //     prev = curr;
+        //     curr->val = ans[i];
+        //     curr = curr->next;
+        // }
+        // prev->next = NULL;
+        // return head;
+
+        //Approach 2: In-Place:
+        ListNode* prev = head;
+        ListNode* curr = head->next;
+
+        while(curr) {
+            if(prev->val != curr->val) {
+                prev->next = curr;
+                prev = curr;
+                curr = curr->next;
+            } else {
+                curr = curr->next;
+            }
+        }
+
+        //At last point prev to null;
+        prev->next = NULL;
+        return head;
+    }
+};
