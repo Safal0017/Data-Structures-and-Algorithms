@@ -63,22 +63,39 @@ public:
         // prev->next = NULL;
         // return head;
 
-        //Approach 2: In-Place:
+        //Approach 2: In-Place (skipping node):
+        // ListNode* prev = head;
+        // ListNode* curr = head->next;
+
+        // while(curr) {
+        //     if(prev->val != curr->val) {
+        //         prev->next = curr;
+        //         prev = curr;
+        //         curr = curr->next;
+        //     } else {
+        //         curr = curr->next;
+        //     }
+        // }
+
+        // //At last point prev to null;
+        // prev->next = NULL;
+        // return head;
+
+        // Approach 2: In-Place (Deleting node-Efficient Memory Handling)
         ListNode* prev = head;
         ListNode* curr = head->next;
 
         while(curr) {
-            if(prev->val != curr->val) {
-                prev->next = curr;
-                prev = curr;
-                curr = curr->next;
+            if(curr->val == prev->val) {
+                prev->next = curr->next;
+                delete curr;
+                curr = prev->next;
             } else {
+                prev = prev->next;
                 curr = curr->next;
             }
         }
 
-        //At last point prev to null;
-        prev->next = NULL;
         return head;
     }
 };
