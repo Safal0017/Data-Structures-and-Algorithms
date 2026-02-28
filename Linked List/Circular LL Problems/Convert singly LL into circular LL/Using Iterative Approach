@@ -1,0 +1,71 @@
+Problem: Convert Singly LL into Circular LL (Using Iterative Approach)
+Link: https://www.geeksforgeeks.org/dsa/convert-singly-linked-list-circular-linked-list/
+
+// [Expected Approach - 2] Using Iterative Approach - O(n) Time and O(1) Space:
+
+// To convert a singly linked list into a circular linked list iteratively, 
+// start by initializing a pointer to traverse the list from the head node. 
+// Traverse the list until we reach the node whose next pointer that is nullptr. 
+// Update its next pointer to point back to the head node.
+
+// C++ Program for converting singly linked list
+// into circular linked list.
+#include <bits/stdc++.h>
+using namespace std;
+
+class Node {
+  public:
+    int data;
+    Node *next;
+    Node(int x) {
+        data = x;
+        next = nullptr;
+    }
+};
+
+// Function that convert singly linked list
+// into circular linked list.
+Node *circular(Node *head) {
+
+    // declare a node variable curr and
+    // assign head node into curr node.
+    Node *curr = head;
+
+    // check that while curr->next is not equal
+    // to NULL then curr points to next node.
+    while (curr->next != nullptr)
+        curr = curr->next;
+
+    // assign curr->next to the head node.
+    curr->next = head;
+
+    return head;
+}
+
+void printList(Node *head) {
+    Node *curr = head;
+    
+    //To avoid entering into an infinite loop
+    do {
+        cout << curr->data << " ";
+        curr = curr->next;
+
+    } while (curr != head);
+    cout << endl;
+}
+
+int main() {
+
+    // create a hard coded list
+    // 10->12->14->16
+    Node *head = new Node(10);
+    head->next = new Node(12);
+    head->next->next = new Node(14);
+    head->next->next->next = new Node(16);
+
+    head = circular(head);
+
+    printList(head);
+
+    return 0;
+}
