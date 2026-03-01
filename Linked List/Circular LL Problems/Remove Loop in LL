@@ -1,0 +1,114 @@
+Problem: Detect and Remove Loop in Linked List
+Link: https://www.geeksforgeeks.org/problems/remove-loop-in-linked-list/1
+
+Problem Description:
+
+Given the head of a singly linked list, the task is to remove a cycle if present. A cycle exists when a node's next pointer points back to a previous node, forming a loop. Internally, a variable pos denotes the index of the node where the cycle starts, but it is not passed as a parameter. The terminal will print true if a cycle is removed otherwise, it will print false.
+
+Examples:
+
+Input: head = 1 -> 3 -> 4, pos = 2
+Output: true
+Explanation: The linked list looks like
+
+A loop is present in the list, and it is removed.
+Input: head = 1 -> 8 -> 3 -> 4, pos = 0
+Output: true
+Explanation: 
+
+The Linked list does not contains any loop. 
+Input: head = 1 -> 2 -> 3 -> 4, pos = 1
+Output: true
+Explanation: The linked list looks like 
+
+A loop is present in the list, and it is removed.
+Constraints:
+1 ≤ size of linked list ≤ 105
+
+CODE:
+
+/*
+class Node {
+  public:
+    int data;
+    Node* next;
+
+    Node(int val) {
+        data = val;
+        next = nullptr;
+    }
+};
+*/
+class Solution {
+  public:
+    void removeLoop(Node* head) {
+        // code here
+        //Return the node which is beginning of the loop.
+
+        //1st: Brute-force Approach:
+        //Using vector to store the addresses of the node
+        // & at each address, 
+        // check if it is already present return that particular addr node.
+
+        //2nd: Perform the same using HashMap/HashSet which helps you achieve the same
+        //in 0(1) T.C.
+
+        //3rd Using slow-fast pointers
+
+        //Find the (POI) point of intersection
+        //initiate slow with head && fast will remain there itself (POI).
+        //increment both by one step at a time,
+        //as and when they meet, it is the beginning of the loop.
+
+        //4th Approach:
+        //Similar to above, just few minor changes,
+        //Once we find (POI)
+        //Calculate the length of the loop,
+        //Initiate slow & fast = head,
+        //Increment fast until it reaches fast = slow + length of the loop
+        //Now increment both, 
+        //as and when slow reaches the node which is the beginning of the loop
+        //Mathematically both should point to the same node.
+        //Reason: Because distance between slow & fast = length of loop.
+
+        if(!head || !head->next)
+        return;
+
+        Node* slow = head;
+        Node* fast = head;
+
+        while(fast && fast->next) {
+            slow = slow->next;
+            fast = fast->next->next;
+
+            if(slow==fast)
+            break;
+        }
+
+        if(!fast || !fast->next)
+        return;
+
+        //We already got POI,
+        //initiating slow = head;
+        slow = head;
+        while(slow!=fast) {
+            slow = slow->next;
+            fast = fast->next;
+        }
+        
+        //IMP: Reason why we didn't used prev pointer in the above iteration itself,
+        //If the beginning of the loop = start of the LL, 
+        //we might run into memory-bound exception, prev = NULL, prev->next == NULL (x->error)
+        //Example case: 1->2->3->4 pos = 1 (4 connecting back to 1), DRY-RUN IT.
+
+        //We got the beginning of the loop,
+        //traverse one more time until slow->next == fast & disconnect from that point.
+        slow = slow->next;
+        while(slow->next!=fast) {
+            slow = slow->next;
+        }
+        
+        //slow->next == fast, disconnecting it.
+        slow->next = NULL;
+    }
+};
