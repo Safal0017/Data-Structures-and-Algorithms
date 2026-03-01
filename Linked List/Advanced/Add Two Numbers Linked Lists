@@ -1,0 +1,144 @@
+Problem: Add Two Numbers Linked Lists
+Link:
+https://leetcode.com/problems/add-two-numbers/
+https://www.geeksforgeeks.org/problems/add-two-numbers-represented-by-linked-lists/1
+
+Problem Statement:
+
+You are given the head of two singly linked lists head1 and head2 representing two non-negative integers. 
+You have to return the head of the linked list representing the sum of these two numbers.
+
+Note: There can be leading zeros in the input lists, but there should not be any leading zeros in the output list.
+
+Examples:
+
+Input: 
+    
+Output:  1 -> 1 -> 2 -> 2
+Explanation: Given numbers are 123 and 999. There sum is 1122.
+    
+Input: 
+    
+Output: 7 -> 0 
+Explanation: Given numbers are 63 and 7. There sum is 70.
+    
+Constraints:
+1 ≤ Number of nodes in head1, head2 ≤ 10^5
+0 ≤ node->data ≤ 9
+
+CODE:
+
+/*
+class Node {
+  public:
+    int data;
+    Node* next;
+    Node(int x) {
+        data = x;
+        next = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+  
+    Node* reverseList(Node* curr, Node* prev) {
+        if(!curr)
+        return prev;
+        
+        Node* fut = curr->next;
+        curr->next = prev;
+        return reverseList(fut, curr);
+    }
+  
+    Node* addTwoLists(Node* head1, Node* head2) {
+        // code here
+
+        //1st: Brute-force Approach
+        //Use array to compute the addition of 2 nos & store the result,
+        //Use the resultant array to create new LL, and return the head.
+        //Consuming Extra Space, S.C: 0(n)
+
+        //2nd: Directly performing addition over the LL,
+        //Ensuring proper carry & edge cases when l1 > l2 or else cases.
+        //No Extra Space needed.
+
+        if(!head1)
+        return head2;
+
+        if(!head2)
+        return head1;
+        
+        Node* curr1 = reverseList(head1, NULL);
+        Node* curr2 = reverseList(head2, NULL);
+        
+        int sum, val, carry = 0;
+
+        Node* tail = new Node(0);
+        Node* newHead = tail;
+
+        while(curr1 && curr2) {
+            sum = curr1->data+curr2->data+carry;
+            val = sum%10;
+            carry = sum/10;
+
+            tail->next = new Node(val);
+            tail = tail->next;
+            curr1 = curr1->next;
+            curr2 = curr2->next;
+        }
+
+        if(curr1 && !curr2) {
+            while(curr1) {
+                sum = curr1->data+carry;
+                val = sum%10;
+                carry = sum/10;
+
+                tail->next = new Node(val);
+                tail = tail->next;
+                curr1 = curr1->next;
+            }
+        } 
+        
+        if(curr2 && !curr1) {
+            while(curr2) {
+                sum = curr2->data+carry;
+                val = sum%10;
+                carry = sum/10;
+
+                tail->next = new Node(val);
+                tail = tail->next;
+                curr2 = curr2->next;
+            }
+        } 
+
+        if(carry) {
+            tail->next = new Node(carry);
+            tail = tail->next;
+        }
+
+        Node* result = reverseList(newHead->next, NULL);
+        
+        //For handling below edge case.
+        while(result->data==0){
+            result = result->next;
+        }
+        
+        return result;
+    }
+};
+
+//Edge case:
+
+// Test Cases Passed: 
+// 10 /1111
+// For Input : 
+// 0 0 0 2 3 7 1
+// 0 0 3 1 1 2
+// Your Code's output is: 
+// 0 -> 0 -> 0 -> 5 -> 4 -> 8 -> 3
+// It's Correct output is: 
+// 5 -> 4 -> 8 -> 3
+// Output Difference: 
+// 0 -> 0 -> 0 -> 5 ->> 4 ->> 8 ->> 3
