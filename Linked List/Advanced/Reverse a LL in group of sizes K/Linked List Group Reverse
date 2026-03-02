@@ -1,0 +1,98 @@
+Problem: Linked List Group Reverse
+Link: https://www.geeksforgeeks.org/problems/reverse-a-linked-list-in-groups-of-given-size/1
+
+[Expected Approach] Using Iterative Method – O(n) Time and O(1) Space,
+
+Problem Statement:
+
+You are given the head of a Singly linked list. You have to reverse every k node in the linked list and return the head of the modified list.
+Note: If the number of nodes is not a multiple of k then the left-out nodes at the end, should be considered as a group and must be reversed.
+
+Examples:
+
+Input: k = 2,
+1->2->3->4->5->6   
+
+Output: 2 -> 1 -> 4 -> 3 -> 6 -> 5
+Explanation: Linked List is reversed in a group of size k = 2.
+
+
+Input: k = 4,   
+1->2->3->4->5->6
+
+Output: 4 -> 3 -> 2 -> 1 -> 6 -> 5
+Explanation: Linked List is reversed in a group of size k = 4.
+
+Input: k = 3,   
+1->2->3->4->5
+
+Output: 3 -> 2 -> 1 -> 5 -> 4
+Explanation: Linked List is reversed in a group of size k = 3.
+
+
+Constraints:
+1 ≤ size of linked list ≤ 10^5
+0 ≤ node->data ≤ 10^6
+1 ≤ k ≤ size of linked list 
+
+
+CODE:
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+
+        //1st Approach:
+        //Make use of Array to perform the same,
+        //Bit Simpler to go back-forth & perform reverse in blocks as compared to LL.
+        //Consumes Extra Space
+
+        //2nd Approach:
+        //In-Place reversal of nodes in k-groups LL.
+
+        if(!head || !head->next)
+        return head;
+
+        if(k==1)
+        return head;
+
+        ListNode* newHead = new ListNode(0);
+        ListNode* first = newHead;
+        first->next = head;
+
+        while(first->next) {
+            int x = k;
+            ListNode* second = first->next;
+            ListNode* curr = first->next;
+            ListNode* prev = first;
+
+            while(x && curr) {
+                ListNode* fut = curr->next;
+                curr->next = prev;
+                prev = curr;
+                curr = fut;
+                x--;
+            }
+
+            first->next = prev;
+            second->next = curr;
+
+            //Most Important Line: likely to make mistakes,
+            //first != prev, first = second as the list ahead of first is reversed.
+            first = second;
+        }
+
+        return newHead->next;
+
+    }
+};
