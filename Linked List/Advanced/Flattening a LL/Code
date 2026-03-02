@@ -1,5 +1,7 @@
 Problem: Flattening a LL
 Link: https://www.geeksforgeeks.org/problems/flattening-a-linked-list/1
+T.C: 0(n^2*m) Assuming where n is total no of lists, and m is total nodes in each lists.
+S.C: 0(1)
 
 Problem Statement:
 
