@@ -1,0 +1,92 @@
+Problem: Clone a LL with random pointer
+Link:
+https://leetcode.com/problems/copy-list-with-random-pointer/
+https://www.geeksforgeeks.org/problems/clone-a-linked-list-with-next-and-random-pointer/1
+
+Using HashMap to map the address,
+T.C: 0(n), S.C: 0(1)
+
+CODE:
+
+/*
+class Node {
+  public:
+    int data;
+    Node* next;
+    Node* random;
+
+    Node(int x) {
+        data = x;
+        next = NULL;
+        random = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    Node* cloneLinkedList(Node* head) {
+        // code here
+        
+        //2nd Approach:
+        //Similar to Approach-1, 
+        //Only difference is, we will map the addresses
+        //(originalNodeAddr-CloneNodeAddr) using unordered_map
+        //i. Create a LL without random pointer.
+        //ii. Map the addresses.
+        //iii. Assign random pointer.
+        
+        if(!head)
+        return NULL;
+
+        //Edge case:
+        // Input
+        // head =
+        // [[-1,0]]
+
+        // Use Testcase
+        // Output
+        // [[-1,null]]
+        // Expected
+        // [[-1,0]]
+
+        // if(!head->next)
+        // return new Node(head->val);
+
+        //i.
+        Node* headCopy = new Node(0);
+        Node* tailCopy = headCopy;
+        Node* temp = head;
+        while(temp) {
+            tailCopy->next = new Node(temp->data);
+            tailCopy = tailCopy->next;
+            temp = temp->next;
+        }
+        tailCopy = headCopy;
+        headCopy = headCopy->next;
+        delete tailCopy;
+        
+        //ii.
+        temp = head;
+        tailCopy = headCopy;
+        unordered_map<Node*, Node*> m;
+        
+        while(temp) {
+            m[temp] = tailCopy;
+            temp = temp->next;
+            tailCopy = tailCopy->next;
+        }
+        
+        //iii.
+        temp = head, tailCopy = headCopy;
+        while(temp) {
+            tailCopy->random = m[temp->random];
+            temp = temp->next;
+            tailCopy = tailCopy->next;
+        }
+        
+        return headCopy;
+        
+        
+    }
+};
