@@ -1,0 +1,134 @@
+Problem: Merge K Sorted Linked Lists
+
+Optimized Heap Approach,
+
+Link:
+https://www.geeksforgeeks.org/problems/merge-k-sorted-linked-lists/1
+https://leetcode.com/problems/merge-k-sorted-lists/
+
+CODE:
+
+/*
+class Node {
+  public:
+    int data;
+    Node* next;
+
+    Node(int x){
+        data = x;
+        next = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+  
+    // Node* Merge(Node* head1, Node* head2) {
+    //     Node* newHead = new Node(0);
+    //     Node* newTail = newHead;
+        
+    //     while(head1 && head2) {
+    //         if(head1->data <= head2->data) {
+    //             newTail->next = head1;
+    //             head1 = head1->next;
+    //             newTail = newTail->next;
+    //             newTail->next = NULL;
+    //         } else {
+    //             newTail->next = head2;
+    //             head2 = head2->next;
+    //             newTail = newTail->next;
+    //             newTail->next = NULL;
+    //         }    
+    //     }
+        
+    //     if(head1)
+    //     newTail->next = head1;
+    //     else
+    //     newTail->next = head2;
+        
+    //     return newHead->next;
+    // }
+    
+    // void MergeSort(vector<Node*> &arr, int start, int end) {
+    //     if(start>=end) 
+    //     return;
+        
+    //     int mid = start + (end-start)/2;
+        
+    //     MergeSort(arr, start, mid);
+    //     MergeSort(arr, mid+1, end);
+    //     arr[start] = Merge(arr[start], arr[mid+1]);
+    // }
+    
+    class Compare {
+        public:
+        bool operator()(Node* a, Node* b) {
+            return a->data > b->data;
+        }
+    };
+  
+    Node* mergeKLists(vector<Node*>& arr) {
+        // code here
+        
+        //1st Approach:
+        //Using the same approach 
+        //which we followed to address: Flattening a LL problem.
+        //Merging first 2 lists, then merging resultant list with next list & so on.
+        //T.C: 0(n^2*m) where n = no of lists & m = no of nodes in each lists
+        
+        // Node* head = arr[0];
+        
+        // for(int i=1;i<arr.size();i++) {
+        //     head = Merge(head, arr[i]);
+        // }
+        
+        // return head;
+        
+        //2nd Approach:
+        //Using MergeSort Logic.
+        //T.C: 0(n*m * (logm))
+        //S.C: 0(logm) for recursion,
+        // MergeSort(arr, 0, arr.size()-1);
+        // return arr[0];
+        
+        // 3rd Approach:
+        // Using Simple MinHeap Method,
+        // dumping all nm nodes into the minHeap (if Step-Down -> 0(nm)) & 
+        // one by one retrieval,
+        // T.C: 0(nm + nmlognm)
+        // S.C: 0(nm)
+        
+        // 4th Approach: 
+        // i. First n elements into the minHeap
+        //   (step-down: 0(n) or step-up: 0(nlogn))
+        // ii. Total Elements: nm,
+        //     Among which n is already inserted so
+        //     (nm-n)*2logn
+        //     =>T.C: nlogn + nmlogn-nlogn ~ 0(nmlogn)
+        //     =>S.C: 0(n)
+        //NOTE: MinHeap will store addresses of the Node and not value,
+        //but the operations will be performed based on data/values using a comparator.
+        
+        priority_queue<Node*, vector<Node*>, Compare> p(arr.begin(), arr.end());
+        
+        Node* root = new Node(0);
+        Node* tail = root;
+        Node* temp;
+        
+        while(!p.empty()) {
+            temp = p.top();
+            p.pop();
+            
+            tail->next = temp;
+            tail = tail->next;
+            
+            if(temp->next)
+            p.push(temp->next);
+        }
+        
+        return root->next;
+        
+        
+    }
+};
