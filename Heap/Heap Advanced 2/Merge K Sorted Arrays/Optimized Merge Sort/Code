@@ -1,0 +1,94 @@
+Problem: Merge K Sorted Arrays
+Link:
+https://www.geeksforgeeks.org/problems/merge-k-sorted-arrays/1
+Other Approaches: https://www.geeksforgeeks.org/dsa/merge-k-sorted-arrays/
+
+Optimized Merge Sort.
+ // T.C: 0(Nlogk) where N = No of Elements & k = rows
+ // S.C: 0(N) + 0(logk) [Auxiliary Space: Extra Arr for Merge Func & Recursive calls]
+
+CODE:
+
+class Solution {
+  public:
+  
+    void merge(vector<int> &arr, int start, int mid, int end) {
+        vector<int> temp(end - start + 1);
+        int left = start, right = mid + 1, index = 0;
+    
+        // merge both halves into temp
+        while (left <= mid && right <= end) {
+            if (arr[left] <= arr[right]) {
+                temp[index] = arr[left];
+                left++;
+            } else {
+                temp[index] = arr[right];
+                right++;
+            }
+            index++;
+        }
+    
+        // only left part elements left
+        while (left <= mid) {
+            temp[index] = arr[left];
+            left++;
+            index++;
+        }
+    
+        // only right part elements left
+        while (right <= end) {
+            temp[index] = arr[right];
+            right++;
+            index++;
+        }
+    
+        // copy back to original array
+        index = 0;
+        int i = start;
+        while (i <= end) {
+            arr[i] = temp[index];
+            i++;
+            index++;
+        }
+    }
+
+  
+    void mergeSort(vector<int>&arr, int start, int end, int portion, int k) {
+        if(portion < 2)
+        return;
+        
+        int mid = start + (portion/2)*k-1;
+        // cout<<k<<" "<<endl;
+        // cout<<mid<<" "<<endl;
+        
+        //leftside
+        mergeSort(arr, start, mid, portion/2, k);
+        //rightside
+        mergeSort(arr, mid+1, end, portion-portion/2,k);
+        merge(arr, start, mid, end);
+    }
+  
+    vector<int> mergeArrays(vector<vector<int>> &arr) {
+        // Code here
+        
+        // 5th Approach: Optimized Merge Sort.
+        // The idea is to divide the Arr into k portions, such that
+        // Each portion is sorted in itself,
+        // so directly, we can call merge func without
+        // each portion being further subdivided until x single element.
+        // T.C: 0(Nlogk) where N = No of Elements & k = rows
+        // S.C: 0(N) + 0(logk) [Auxiliary Space: Extra Arr for Merge Func & Recursive calls]
+        
+        vector<int> ans;
+        for(int i=0;i<arr.size();i++)
+        for(int j=0;j<arr[0].size();j++)
+        ans.push_back(arr[i][j]);
+        
+        //portion = arr.size() => rows
+        //k = arr[0].size() => col (Elements in each row)
+        
+        mergeSort(ans, 0, ans.size()-1, arr.size(), arr[0].size());
+        return ans;
+        
+    }
+};
