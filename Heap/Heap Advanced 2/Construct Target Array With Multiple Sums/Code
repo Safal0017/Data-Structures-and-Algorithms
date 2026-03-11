@@ -1,0 +1,68 @@
+Problem: Construct Target Array With Multiple Sums
+Link:
+https://leetcode.com/problems/construct-target-array-with-multiple-sums/
+
+Optimized Max-Heap Approach,
+
+CODE:
+
+class Solution {
+public:
+    bool isPossible(vector<int>& target) {
+
+        // Approach 1: Forward Simulation (Brute Force)
+        // Start from [1,1,1] → try building up to target by repeatedly adding sums.
+        // Extremely slow, can overshoot or reach dead ends easily.
+        // Time: Exponential, Space: O(n).
+
+        // Approach 2: Reverse Simulation (Optimized Direction)
+        // Work backward from target → reduce largest element toward the base state [1,...,1].
+        // Replace largest element using Max - (Sum - Max) each iteration.
+        // Time: O(n * log n * avg steps), Space: O(n). TLE
+
+        // Approach 3: Reverse with Mod Optimization (Efficient Solution)
+        // Use max-heap, pick largest, compute Element = Max % RemSum to reduce faster.
+        // Handles edges: if RemSum ≤ 0 or RemSum ≥ Max ⇒ impossible cases.
+        // Time: O(n log n), Space: O(n) — optimal and accepted solution.
+
+        
+        //Max-Heap
+        priority_queue<int> p;
+        long long sum = 0;
+
+        for(int i=0;i<target.size();i++) {
+            p.push(target[i]);
+            sum+=target[i];
+        }
+
+        long MaxEle, RemSum, Element;
+        while(p.top()!=1) {
+            MaxEle = p.top();
+            p.pop();
+
+            RemSum = sum-MaxEle;
+
+            //Element = MaxEle-RemSum
+            //& we know 
+            //Element<1 (x not allowed) && Element >= MaxEle (x not allowed)
+            //& it is only possible when RemSum >= MaxEle or RemSum<=0 respectively.
+
+            if(RemSum<=0 || RemSum >= MaxEle)
+            return 0;
+
+            Element = MaxEle % RemSum;
+
+            if(Element == 0) {
+                if(RemSum == 1)
+                return 1;
+                else
+                return 0;
+            } 
+            
+            sum = RemSum + Element;
+            p.push(Element);
+            
+        } //while loop ends
+        return 1;
+    } //func ends
+};
