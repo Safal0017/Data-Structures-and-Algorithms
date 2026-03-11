@@ -1,0 +1,91 @@
+Problem: Smallest Range covering elements from k-lists
+Link:
+https://leetcode.com/problems/smallest-range-covering-elements-from-k-lists/
+https://www.geeksforgeeks.org/problems/find-smallest-range-containing-elements-from-k-lists/1
+Multiple Approaches: https://www.geeksforgeeks.org/dsa/find-smallest-range-containing-elements-from-k-lists/
+
+Optimized Min-Heap Approach,
+
+CODE:
+
+class Solution {
+public:
+    vector<int> smallestRange(vector<vector<int>>& nums) {
+        
+        // # Approach 1: Brute Force (Combine All Elements)
+        // # Dump all elements into one array, check every possible range, 
+        // # and verify if it covers at least one element from each list.
+        // # Time: O((n*k)^3), Space: O(n*k) — very inefficient.
+
+        // # Approach 2: Iterative Range + Verification
+        // # Try forming ranges manually and check if they include all k lists,
+        // # Could be between (MinEle, MaxEle) 
+        // # i=MinEle i<=MaxEle-1 & j=i+1 j<=MaxEle
+        // # essentially looping through each range and validating coverage.
+        // # Time: O((n*k)^2 to ^3), Space: O(1) — still brute-force idea.
+
+        // # Approach 3: Min Heap + Sliding Window
+        // # Use a min-heap to track smallest current element and maintain max element,
+        // # at each step compute minimal range covering one element from each list.
+        // # Time: O(n*k*log k), Space: O(k) — efficient optimal solution.
+
+
+        // Steps: Approach 3
+        // 1. Push first element of each list into min-heap, track the currentMax among them.
+        // 2. Compute range using
+        // [heap.top() which is currentMin, currentMax],
+        // update best ans if range is smaller.
+        // 3. To minimize the difference in range, pop currentMin, push it's next element
+        // from the same list (if exists) & update currentMax.
+        // 4. Repeat Steps above until any list runs out of elements after a pop,
+        // return the best range (ans).
+
+
+        //min-heap
+        //value, row, col
+        //pair<int, pair<int, int>>
+
+        //Ideally, min-heap
+        // priority_queue<int, vector<int>, greater<int>> p;
+
+        //Our Use-case
+        priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>, greater<pair<int, pair<int, int>>>> p;
+
+        int minimum, maximum = INT_MIN;
+        //insert first element of each row into the heap.
+        for(int i=0;i<nums.size();i++) {
+            p.push(make_pair(nums[i][0], make_pair(i, 0)));
+            maximum = max(maximum, nums[i][0]);
+        }
+
+        minimum = p.top().first;
+        vector<int> ans(2);
+        ans[0] = minimum;
+        ans[1] = maximum;
+
+        pair<int,pair<int,int>> temp;
+        int row, col, element;
+
+        while(p.size()==nums.size()) { //until PQ contains 1 element from each row/lists.
+            temp = p.top();
+            p.pop();
+            element = temp.first;
+            row = temp.second.first;
+            col = temp.second.second;
+
+            if(col+1<nums[row].size()) {
+                col++;
+                p.push(make_pair(nums[row][col], make_pair(row, col)));
+                maximum = max(maximum, nums[row][col]);
+                minimum = p.top().first;
+
+                //If I got the smaller range, will update it.
+                if(maximum-minimum < ans[1]-ans[0]) {
+                    ans[0] = minimum;
+                    ans[1] = maximum;
+                }
+            }
+        }//while loop ends
+        return ans;
+    }//func ends
+};
